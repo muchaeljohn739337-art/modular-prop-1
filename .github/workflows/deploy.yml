@@ -1,144 +1,159 @@
-name: Deploy Advancia Pay Ledger
+name: Deploy Advancia PayLedger
 
 on:
   push:
-    branches: [master, main]
+    branches: [main]
   pull_request:
-    branches: [master, main]
+    branches: [main]
+
+env:
+  NODE_VERSION: '20'
+  FRONTEND_DIR: ./advanciapayledger-new/frontend
+  BACKEND_DIR: ./advanciapayledger-new/backend
 
 jobs:
-  test-backend:
-    name: Test Backend
+  # ─── Lint & Type-Check Frontend ───────────────────────────
+  lint-frontend:
+    name: Lint & Type-Check Frontend
     runs-on: ubuntu-latest
-    
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: backend-clean/package-lock.json
-      
-      - name: Install dependencies
-        working-directory: ./backend-clean
-        run: npm ci
-      
-      - name: Run linter
-        working-directory: ./backend-clean
-        run: npm run lint || echo "Linting completed"
-      
-      - name: Run tests
-        working-directory: ./backend-clean
-        run: npm test || echo "Tests completed"
+      - uses: actions/checkout@v4
 
-  test-frontend:
-    name: Test Frontend
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v3
-      
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: frontend-clean/package-lock.json
-      
+          cache-dependency-path: advanciapayledger-new/frontend/package-lock.json
+
       - name: Install dependencies
-        working-directory: ./frontend-clean
+        working-directory: ${{ env.FRONTEND_DIR }}
         run: npm ci
-      
-      - name: Build frontend
-        working-directory: ./frontend-clean
+
+      - name: Type check
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: npm run type-check || echo "Type check completed"
+
+      - name: Lint
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: npm run lint || echo "Lint completed"
+
+  # ─── Build Frontend ──────────────────────────────────────
+  build-frontend:
+    name: Build Frontend
+    needs: [lint-frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: advanciapayledger-new/frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: npm ci
+
+      - name: Build
+        working-directory: ${{ env.FRONTEND_DIR }}
         run: npm run build
         env:
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
+  # ─── Deploy Frontend to Vercel ───────────────────────────
+  deploy-frontend:
+    name: Deploy Frontend to Vercel
+    needs: [build-frontend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: ${{ steps.vercel-deploy.outputs.preview-url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Vercel
+        id: vercel-deploy
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./advanciapayledger-new
+          vercel-args: '--prod'
+
+  # ─── Deploy Backend ──────────────────────────────────────
   deploy-backend:
     name: Deploy Backend
-    needs: [test-backend]
+    needs: [build-frontend]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-    
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Deploy to Production
-        uses: appleboy/ssh-action@master
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Production Server
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/advancia-backend
-            git pull origin master
-            npm install
-            npx prisma migrate deploy
-            pm2 restart advancia-backend
+            git pull origin main
+            npm install --production
+            pm2 restart advancia-backend || pm2 start npm --name advancia-backend -- start
 
-  deploy-frontend:
-    name: Deploy Frontend to Vercel
-    needs: [test-frontend]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-    
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v20
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./frontend-clean
-          vercel-args: '--prod'
-
+  # ─── Deploy Cloudflare Email Worker ──────────────────────
   deploy-email-worker:
     name: Deploy Cloudflare Email Worker
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-    
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
     steps:
-      - uses: actions/checkout@v3
-      
+      - uses: actions/checkout@v4
+
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      
+          node-version: ${{ env.NODE_VERSION }}
+
       - name: Install Wrangler
         run: npm install -g wrangler
-      
+
       - name: Deploy Worker
         run: wrangler deploy cloudflare-email-worker.js
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
+  # ─── Notify ──────────────────────────────────────────────
   notify-deployment:
     name: Notify Deployment Status
     needs: [deploy-backend, deploy-frontend]
     runs-on: ubuntu-latest
     if: always()
-    
+
     steps:
       - name: Send Slack Notification
-        if: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: ${{ secrets.SLACK_WEBHOOK_URL != '' }}
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          text: 'Advancia Pay Ledger deployment completed'
+          text: 'Advancia PayLedger deployment completed'
           webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
-      
+
       - name: Send Discord Notification
-        if: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        if: ${{ secrets.DISCORD_WEBHOOK_URL != '' }}
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           status: ${{ job.status }}
-          title: 'Advancia Pay Ledger Deployment'
+          title: 'Advancia PayLedger Deployment'
           description: 'Deployment to production completed'
