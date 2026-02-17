@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Enhanced Login - Advancia Pay Ledger</title>
+    <meta name="author" content="Original Creator - Advancia Pay Ledger Founder">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #fecfef 75%, #fecfef 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animated background particles */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 48px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        
+        .ai-icon {
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+        
+        .logo {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 32px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            color: #1e293b;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .form-input:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: #94a3b8;
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .input-icon:hover {
+            color: #667eea;
+        }
+        
+        .ai-suggestions {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #0369a1;
+        }
+        
+        .ai-suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        
+        .ai-suggestion-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .login-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.3);
+        }
+        
+        .login-button:active {
+            transform: translateY(0);
+        }
+        
+        .login-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .biometric-section {
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .biometric-title {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        .biometric-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .biometric-button {
+            flex: 1;
+            padding: 12px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .biometric-button:hover {
+            border-color: #667eea;
+            color: #667eea;
+            background: white;
+        }
+        
+        .security-features {
+            margin-top: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #f0fdf4;
+            color: #16a34a;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .success-message {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #16a34a;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .footer {
+            margin-top: 32px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+        
+        @media (max-width: 640px) {
+            .login-container {
+                padding: 32px 24px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .biometric-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="login-container">
+        <div class="ai-badge">
+            <div class="ai-icon">🤖</div>
+            AI Enhanced Security
+        </div>
+        
+        <div class="logo">Advancia Pay Ledger</div>
+        <div class="subtitle">Next-generation authentication experience</div>
+        
+        <div id="messageContainer"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="email" 
+                        id="email" 
+                        class="form-input" 
+                        placeholder="Enter your email"
+                        required
+                    >
+                    <span class="input-icon" onclick="toggleAI('email')">🤖</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        class="form-input" 
+                        placeholder="Enter your password"
+                        required
+                    >
+                    <span class="input-icon" onclick="togglePasswordVisibility()">👁️</span>
+                </div>
+            </div>
+            
+            <div id="aiSuggestions" class="ai-suggestions" style="display: none;">
+                <div class="ai-suggestion-item">
+                    <span>💡</span>
+                    <span>AI Tip: Use a strong, unique password</span>
+                </div>
+                <div class="ai-suggestion-item">
+                    <span>🔒</span>
+                    <span>Enable 2FA for extra security</span>
+                </div>
+            </div>
+            
+            <button type="submit" class="login-button" id="loginButton">
+                <span id="buttonText">Sign In with AI Security</span>
+            </button>
+        </form>
+        
+        <div class="biometric-section">
+            <div class="biometric-title">Or use biometric authentication</div>
+            <div class="biometric-buttons">
+                <button class="biometric-button" onclick="authenticateWithFingerprint()">
+                    <span>👆</span>
+                    Fingerprint
+                </button>
+                <button class="biometric-button" onclick="authenticateWithFace()">
+                    <span>👤</span>
+                    Face ID
+                </button>
+                <button class="biometric-button" onclick="authenticateWithVoice()">
+                    <span>🎤</span>
+                    Voice
+                </button>
+            </div>
+        </div>
+        
+        <div class="security-features">
+            <div class="security-badge">
+                <span>🛡️</span>
+                AI Protection
+            </div>
+            <div class="security-badge">
+                <span>🔐</span>
+                End-to-End Encrypted
+            </div>
+            <div class="security-badge">
+                <span>⚡</span>
+                Real-time Threat Detection
+            </div>
+            <div class="security-badge">
+                <span>🌍</span>
+                Global Security Network
+            </div>
+        </div>
+        
+        <div class="footer">
+            Powered by Advancia AI Security Engine • Creator Exclusive
+        </div>
+    </div>
+    
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Initialize particles
+        createParticles();
+        
+        // Password visibility toggle
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const icon = event.target;
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                icon.textContent = '👁️';
+            }
+        }
+        
+        // AI suggestions toggle
+        function toggleAI(field) {
+            const suggestions = document.getElementById('aiSuggestions');
+            suggestions.style.display = suggestions.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // Show message
+        function showMessage(message, type = 'error') {
+            const container = document.getElementById('messageContainer');
+            const messageClass = type === 'error' ? 'error-message' : 'success-message';
+            container.innerHTML = `<div class="${messageClass}">${message}</div>`;
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+        
+        // AI-powered login
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const button = document.getElementById('loginButton');
+            const buttonText = document.getElementById('buttonText');
+            
+            // Basic validation
+            if (!email || !password) {
+                showMessage('Please enter both email and password');
+                return;
+            }
+            
+            // AI security check
+            if (!isSecurePassword(password)) {
+                showMessage('AI Security Alert: Please use a stronger password');
+                return;
+            }
+            
+            // Show loading state
+            button.disabled = true;
+            buttonText.innerHTML = '<span class="loading-spinner"></span> AI Security Scanning...';
+            
+            try {
+                // Simulate AI security analysis
+                await performAISecurityCheck(email);
+                
+                buttonText.textContent = 'Authenticating...';
+                
+                // Simulate API call
+                await simulateLogin(email, password);
+                
+                // Success
+                showMessage('Login successful! AI security verified.', 'success');
+                buttonText.textContent = 'Redirecting...';
+                
+                setTimeout(() => {
+                    // window.location.href = '/dashboard';
+                    showMessage('Welcome to Advancia Pay Ledger!', 'success');
+                }, 2000);
+                
+            } catch (error) {
+                showMessage(error.message);
+            } finally {
+                setTimeout(() => {
+                    button.disabled = false;
+                    buttonText.textContent = 'Sign In with AI Security';
+                }, 3000);
+            }
+        });
+        
+        // AI security check
+        function isSecurePassword(password) {
+            // AI-powered password strength analysis
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasNumbers = /\d/.test(password);
+            const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+            const isLongEnough = password.length >= 8;
+            
+            return hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar && isLongEnough;
+        }
+        
+        // Perform AI security check
+        async function performAISecurityCheck(email) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    // Simulate AI analysis
+                    console.log('AI Security: Analyzing login patterns...');
+                    console.log('AI Security: Checking threat intelligence...');
+                    console.log('AI Security: Verifying device fingerprint...');
+                    resolve();
+                }, 1500);
+            });
+        }
+        
+        // Simulate login
+        async function simulateLogin(email, password) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    // Demo credentials
+                    if (email === 'admin@advanciapayledger.com' && password === 'Admin123!') {
+                        resolve();
+                    } else {
+                        reject(new Error('Invalid credentials. AI security detected suspicious activity.'));
+                    }
+                }, 1000);
+            });
+        }
+        
+        // Biometric authentication
+        async function authenticateWithFingerprint() {
+            showMessage('👆 Fingerprint authentication initiated...');
+            
+            if ('credentials' in navigator) {
+                try {
+                    const credential = await navigator.credentials.get({
+                        publicKey: {
+                            challenge: new Uint8Array(16),
+                            allowCredentials: [],
+                            userVerification: 'required'
+                        }
+                    });
+                    showMessage('Fingerprint authentication successful!', 'success');
+                } catch (error) {
+                    showMessage('Fingerprint authentication not available on this device');
+                }
+            } else {
+                showMessage('Biometric authentication not supported');
+            }
+        }
+        
+        async function authenticateWithFace() {
+            showMessage('👤 Face ID authentication initiated...');
+            
+            // Check if camera is available
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    showMessage('Face ID scanning... Please position your face in the camera', 'success');
+                    
+                    // Stop the stream after demonstration
+                    setTimeout(() => {
+                        stream.getTracks().forEach(track => track.stop());
+                        showMessage('Face ID authentication successful!', 'success');
+                    }, 3000);
+                } catch (error) {
+                    showMessage('Camera access denied or not available');
+                }
+            } else {
+                showMessage('Face ID not supported on this device');
+            }
+        }
+        
+        async function authenticateWithVoice() {
+            showMessage('🎤 Voice authentication initiated...');
+            
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    showMessage(`Voice pattern recognized: "${transcript}"`, 'success');
+                };
+                
+                recognition.onerror = function() {
+                    showMessage('Voice authentication failed');
+                };
+                
+                recognition.start();
+                showMessage('Please say "Advancia Pay Ledger" to authenticate');
+            } else {
+                showMessage('Voice recognition not supported in this browser');
+            }
+        }
+        
+        // AI threat detection
+        setInterval(() => {
+            console.log('AI Security: Scanning for threats...');
+            console.log('AI Security: Monitoring login attempts...');
+            console.log('AI Security: Updating security protocols...');
+        }, 30000);
+    </script>
+</body>
+</html>

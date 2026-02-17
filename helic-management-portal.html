@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HELOC Management - Advancia Pay Ledger</title>
+    <meta name="author" content="Original Creator - Advancia Pay Ledger Founder">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1428 100%);
+            color: #e0e6ed;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #13c2c2, #1890ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            color: #a0aec0;
+            font-size: 1.1rem;
+        }
+        
+        .helic-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .overview-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .overview-card h3 {
+            color: #13c2c2;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .overview-card p {
+            color: #a0aec0;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .value-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #10b981;
+            margin: 10px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #13c2c2, #10b981);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #13c2c2, #1890ff);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e6ed;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(19, 194, 194, 0.3);
+        }
+        
+        .security-notice {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a0aec0;
+            margin-top: 50px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .helic-overview {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">HELOC Management Center</h1>
+            <p class="subtitle">Home Equity Line of Credit with Rockefeller Protection</p>
+        </header>
+        
+        <div class="helic-overview">
+            <div class="overview-card">
+                <h3>🏠 Home Value</h3>
+                <p>Current appraised value of your property</p>
+                <div class="value-display">$500,000</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 85%;"></div>
+                </div>
+                <small>Max LTV: 85%</small>
+            </div>
+            
+            <div class="overview-card">
+                <h3>💰 Available Credit</h3>
+                <p>Total amount available to draw</p>
+                <div class="value-display">$425,000</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 30%;"></div>
+                </div>
+                <small>$127,500 currently drawn</small>
+            </div>
+            
+            <div class="overview-card">
+                <h3>📊 Interest Rate</h3>
+                <p>Current annual percentage rate</p>
+                <div class="value-display">7.5%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%;"></div>
+                </div>
+                <small>Preferred rate applied</small>
+            </div>
+            
+            <div class="overview-card">
+                <h3>📅 Draw Period</h3>
+                <p>Time remaining to draw funds</p>
+                <div class="value-display">12 Years</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 20%;"></div>
+                </div>
+                <small>3 years used of 15 year term</small>
+            </div>
+        </div>
+        
+        <div class="security-notice">
+            <h3>🔒 Security Status: Protected</h3>
+            <p>Your HELOC account is protected under the Rockefeller Protection Plan with enhanced security features and no super admin access.</p>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary">Request Draw</button>
+            <button class="btn btn-secondary">View Statements</button>
+            <button class="btn btn-secondary">Payment History</button>
+            <button class="btn btn-secondary">Protection Plan Details</button>
+        </div>
+        
+        <footer class="footer">
+            <p>&copy; 2026 Advancia Pay Ledger. All rights reserved.</p>
+            <p>Created by Original Founder - Advancia Pay Ledger | Version 1.0.0 Founder's Edition</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Add interactive functionality
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (!this.classList.contains('btn-primary')) {
+                    e.preventDefault();
+                    alert('This feature is available in the full platform dashboard.');
+                }
+            });
+        });
+        
+        // Animate progress bars on load
+        window.addEventListener('load', function() {
+            const progressFills = document.querySelectorAll('.progress-fill');
+            progressFills.forEach(fill => {
+                const width = fill.style.width;
+                fill.style.width = '0%';
+                setTimeout(() => {
+                    fill.style.width = width;
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>

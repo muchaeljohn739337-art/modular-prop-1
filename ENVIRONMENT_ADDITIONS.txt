@@ -1,0 +1,24 @@
+# Add these variables to your backend-clean/.env file
+
+# NOWPayments Configuration (Crypto Deposits)
+NOWPAYMENTS_API_KEY=069fcaef-bb02-425b-b181-9ec00a6892d3
+NOWPAYMENTS_PUBLIC_KEY=PBBQ3X8-6W6MSH5-Q3GN1BM-Y2KBKQA
+NOWPAYMENTS_IPN_SECRET=i3ctH3QzQRraSBpmaKgkfaIUZ+k6UkyE
+
+# Alchemy Blockchain Configuration (Smart Contracts & Web3)
+ALCHEMY_API_KEY=Fq0u1wpuGJtphLQQGMUmn
+ALCHEMY_ETHEREUM_RPC=https://eth-mainnet.g.alchemy.com/v2/Fq0u1wpuGJtphLQQGMUmn
+
+# Webhook URLs (configure in dashboards)
+NOWPAYMENTS_WEBHOOK_URL=https://advanciapayledger.com/api/payments/nowpayments/webhook
+ALCHEMY_PAY_WEBHOOK_URL=https://advanciapayledger.com/api/payments/alchemy/webhook
+
+# Backend URLs
+BACKEND_URL=https://advanciapayledger.com
+FRONTEND_URL=https://advancia-payledger.vercel.app
+
+# Instructions:
+# 1. Copy these variables to your backend-clean/.env file
+# 2. Restart backend with: npm run dev
+# 3. Configure webhooks in payment dashboards
+# 4. Test payment flows

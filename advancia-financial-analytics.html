@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advancia Pay Ledger - Financial Analytics</title>
+    <meta name="author" content="Advancia Pay Ledger System">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #475569 75%, #64748b 100%);
+            min-height: 100vh;
+            color: #f1f5f9;
+            padding: 20px;
+        }
+        
+        .analytics-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+        
+        .system-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        
+        .title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 32px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+        
+        .metric-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .metric-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+        
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        
+        .metric-change {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .positive {
+            color: #10b981;
+        }
+        
+        .negative {
+            color: #ef4444;
+        }
+        
+        .neutral {
+            color: #64748b;
+        }
+        
+        .metric-details {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+        
+        .analytics-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .data-table {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        
+        .data-table th {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #f1f5f9;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #e2e8f0;
+        }
+        
+        .data-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .chart-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+        }
+        
+        .action-button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-right: 12px;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+        }
+        
+        .filter-controls {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #f1f5f9;
+            font-size: 14px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active {
+            background: #10b981;
+        }
+        
+        .status-inactive {
+            background: #ef4444;
+        }
+        
+        .status-pending {
+            background: #f59e0b;
+        }
+        
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-controls {
+                flex-direction: column;
+            }
+            
+            .data-table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="analytics-container">
+        <div class="header">
+            <div class="system-badge">
+                <span>💰</span>
+                ADVANCIA PAY LEDGER SYSTEM
+            </div>
+            <div class="title">Financial Analytics</div>
+            <div class="subtitle">Complete Value Flow Analysis - Collections, Profits, Losses, Income Gains</div>
+        </div>
+        
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">Total Value Flow</div>
+                    <div class="metric-icon">💸</div>
+                </div>
+                <div class="metric-value">$8.47M</div>
+                <div class="metric-change positive">+12.5% from last month</div>
+                <div class="metric-details">
+                    Total transaction volume across all user accounts and payment channels
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">Collections</div>
+                    <div class="metric-icon">💳</div>
+                </div>
+                <div class="metric-value">$2.34M</div>
+                <div class="metric-change positive">+8.3% from last month</div>
+                <div class="metric-details">
+                    Total collections from payments, subscriptions, and service fees
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">User Profits</div>
+                    <div class="metric-icon">📈</div>
+                </div>
+                <div class="metric-value">$1.82M</div>
+                <div class="metric-change positive">+15.7% from last month</div>
+                <div class="metric-details">
+                    Combined profits from all user trading and investment activities
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">User Losses</div>
+                    <div class="metric-icon">📉</div>
+                </div>
+                <div class="metric-value">$342K</div>
+                <div class="metric-change negative">-3.2% from last month</div>
+                <div class="metric-details">
+                    Total losses from user trading, failed transactions, and chargebacks
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">Net Income Gains</div>
+                    <div class="metric-icon">💰</div>
+                </div>
+                <div class="metric-value">$1.48M</div>
+                <div class="metric-change positive">+18.9% from last month</div>
+                <div class="metric-details">
+                    Net income after deducting losses and operational costs
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">Active Users</div>
+                    <div class="metric-icon">👥</div>
+                </div>
+                <div class="metric-value">1,247</div>
+                <div class="metric-change positive">+5.2% from last month</div>
+                <div class="metric-details">
+                    Total active users participating in financial activities
+                </div>
+            </div>
+        </div>
+        
+        <div class="analytics-section">
+            <div class="section-title">
+                <span>📊</span>
+                Value Flow Analysis
+            </div>
+            
+            <div class="filter-controls">
+                <select class="filter-select" onchange="filterData(this.value)">
+                    <option value="all">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                </select>
+                <select class="filter-select" onchange="filterUsers(this.value)">
+                    <option value="all">All Users</option>
+                    <option value="profitable">Profitable Users</option>
+                    <option value="loss">Users with Losses</option>
+                    <option value="active">Most Active</option>
+                </select>
+                <button class="action-button" onclick="refreshData()">🔄 Refresh Data</button>
+                <button class="action-button" onclick="exportData()">📥 Export Report</button>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Total Transactions</th>
+                        <th>Profit/Loss</th>
+                        <th>Income Gains</th>
+                        <th>Collections</th>
+                        <th>Status</th>
+                        <th>Trend</th>
+                    </tr>
+                </thead>
+                <tbody id="userDataTable">
+                    <tr>
+                        <td><strong>John Doe</strong></td>
+                        <td>$124,500</td>
+                        <td class="positive">+$18,200</td>
+                        <td class="positive">+$22,100</td>
+                        <td>$102,300</td>
+                        <td><span class="status-indicator status-active"></span>Active</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 78%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Jane Smith</strong></td>
+                        <td>$89,200</td>
+                        <td class="positive">+$12,400</td>
+                        <td class="positive">+$15,600</td>
+                        <td>$73,600</td>
+                        <td><span class="status-indicator status-active"></span>Active</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Robert Johnson</strong></td>
+                        <td>$67,800</td>
+                        <td class="negative">-$3,200</td>
+                        <td class="positive">+$8,900</td>
+                        <td>$59,700</td>
+                        <td><span class="status-indicator status-active"></span>Active</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 42%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Emily Davis</strong></td>
+                        <td>$156,300</td>
+                        <td class="positive">+$34,700</td>
+                        <td class="positive">+$41,200</td>
+                        <td>$115,100</td>
+                        <td><span class="status-indicator status-active"></span>Active</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 92%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Michael Wilson</strong></td>
+                        <td>$45,600</td>
+                        <td class="negative">-$8,400</td>
+                        <td class="negative">-$2,100</td>
+                        <td>$47,700</td>
+                        <td><span class="status-indicator status-pending"></span>Pending</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 28%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="analytics-section">
+            <div class="section-title">
+                <span>📈</span>
+                Profit & Loss Analysis
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">Total Profit Users</div>
+                        <div class="metric-icon">📊</div>
+                    </div>
+                    <div class="metric-value">847</div>
+                    <div class="metric-change positive">+68 users this month</div>
+                    <div class="metric-details">
+                        Users with positive profit margins
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">Total Loss Users</div>
+                        <div class="metric-icon">⚠️</div>
+                    </div>
+                    <div class="metric-value">156</div>
+                    <div class="metric-change negative">+12 users this month</div>
+                    <div class="metric-details">
+                        Users with net losses
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">Break-even Users</div>
+                        <div class="metric-icon">⚖️</div>
+                    </div>
+                    <div class="metric-value">244</div>
+                    <div class="metric-change neutral">+5 users this month</div>
+                    <div class="metric-details">
+                        Users with balanced profit/loss
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                📊 Interactive Profit/Loss Chart - Real-time Financial Analytics Visualization
+            </div>
+        </div>
+        
+        <div class="analytics-section">
+            <div class="section-title">
+                <span>💳</span>
+                Collections & Revenue Streams
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">Transaction Fees</div>
+                        <div class="metric-icon">💸</div>
+                    </div>
+                    <div class="metric-value">$487K</div>
+                    <div class="metric-change positive">+6.2% from last month</div>
+                    <div class="metric-details">
+                        Revenue from transaction processing fees
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">Subscription Revenue</div>
+                        <div class="metric-icon">🔄</div>
+                    </div>
+                    <div class="metric-value">$1.23M</div>
+                    <div class="metric-change positive">+11.4% from last month</div>
+                    <div class="metric-details">
+                        Monthly subscription and service fees
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">HELOC Revenue</div>
+                        <div class="metric-icon">🏠</div>
+                    </div>
+                    <div class="metric-value">$622K</div>
+                    <div class="metric-change positive">+9.8% from last month</div>
+                    <div class="metric-details">
+                        Revenue from HELOC protection plans
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Advancia Pay Ledger Financial Analytics System
+        console.log('ADVANCIA PAY LEDGER FINANCIAL ANALYTICS:');
+        console.log('- System: Value Flow Analysis');
+        console.log('- Metrics: Collections, Profits, Losses, Income Gains');
+        console.log('- Users: 1,247 active participants');
+        console.log('- Total Volume: $8.47M');
+        console.log('- Date: ' + new Date().toISOString());
+        
+        // Real-time data simulation
+        function updateMetrics() {
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics.forEach(metric => {
+                const currentValue = parseFloat(metric.textContent.replace(/[$,K,M]/g, ''));
+                const variation = (Math.random() - 0.5) * 0.02; // ±1% variation
+                const newValue = currentValue * (1 + variation);
+                
+                if (metric.textContent.includes('M')) {
+                    metric.textContent = '$' + newValue.toFixed(2) + 'M';
+                } else if (metric.textContent.includes('K')) {
+                    metric.textContent = '$' + newValue.toFixed(0) + 'K';
+                } else {
+                    metric.textContent = '$' + newValue.toFixed(0);
+                }
+            });
+        }
+        
+        // Update metrics every 5 seconds
+        setInterval(updateMetrics, 5000);
+        
+        function filterData(period) {
+            console.log('Filtering data by period:', period);
+            // In production, fetch filtered data from backend
+            refreshData();
+        }
+        
+        function filterUsers(userType) {
+            console.log('Filtering users by type:', userType);
+            // In production, fetch filtered user data from backend
+            refreshData();
+        }
+        
+        function refreshData() {
+            console.log('Refreshing financial analytics data...');
+            // Simulate data refresh
+            const table = document.getElementById('userDataTable');
+            table.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                table.style.opacity = '1';
+                console.log('Financial data refreshed successfully');
+            }, 1000);
+        }
+        
+        function exportData() {
+            console.log('Exporting financial analytics report...');
+            alert('Financial Analytics Report Exported - Complete Value Flow Analysis');
+        }
+        
+        // Financial monitoring
+        setInterval(() => {
+            console.log('Financial Status Monitoring:');
+            console.log('- Value Flow: $8.47M total volume');
+            console.log('- Collections: $2.34M processed');
+            console.log('- User Profits: $1.82M distributed');
+            console.log('- User Losses: $342K recorded');
+            console.log('- Net Income: $1.48M gains');
+        }, 30000);
+    </script>
+</body>
+</html>

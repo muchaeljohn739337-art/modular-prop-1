@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Fund Vault - Advancia Pay Ledger</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #f39c12;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .local-notice {
+            background: rgba(39, 174, 96, 0.2);
+            border: 2px solid #27ae60;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .local-notice h3 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card h3 {
+            color: #f39c12;
+            margin-bottom: 15px;
+        }
+
+        .balance-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 10px 0;
+        }
+
+        .fund-control {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px 0;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: #fff;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .transaction-history {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .transaction-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .transaction-item.local {
+            border-left: 4px solid #27ae60;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .status-success {
+            background: rgba(39, 174, 96, 0.2);
+            border: 1px solid #27ae60;
+            color: #27ae60;
+        }
+
+        .status-warning {
+            background: rgba(243, 156, 18, 0.2);
+            border: 1px solid #f39c12;
+            color: #f39c12;
+        }
+
+        .system-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(39, 174, 96, 0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .fund-allocation {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .allocation-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .allocation-item h4 {
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+
+        .allocation-item .amount {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="system-status">
+        🔒 LOCAL SYSTEM ONLY
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ Local Fund Vault</h1>
+            <p>Advancia Pay Ledger - Local Storage Only</p>
+            <p style="color: #27ae60;">● All funds remain on localhost</p>
+        </div>
+
+        <div class="local-notice">
+            <h3>🔒 LOCAL STORAGE CONFIRMED</h3>
+            <p>No external connections - All funds stored locally</p>
+            <p>Bybit integration removed - System locked to localhost</p>
+            <p>Nothing leaves this system - Complete local control</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>💰 Total Local Balance</h3>
+                <div class="balance-display" id="total-balance">$2,089,590</div>
+                <p>USD Stored Locally</p>
+            </div>
+
+            <div class="card">
+                <h3>🪙 Local Crypto Holdings</h3>
+                <div id="crypto-holdings">
+                    <p>BTC: 12.45 (~$560,250)</p>
+                    <p>ETH: 45.78 (~$137,340)</p>
+                    <p>USDT: 125,000 (~$125,000)</p>
+                    <p>BNB: 890 (~$267,000)</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🔐 Security Status</h3>
+                <p>External Access: <span style="color: #e74c3c;">✗ Disabled</span></p>
+                <p>Local Storage: <span style="color: #27ae60;">✓ Active</span></p>
+                <p>System Lock: <span style="color: #27ae60;">✓ Maximum</span></p>
+                <p>Admin Control: <span style="color: #27ae60;">✓ Exclusive</span></p>
+            </div>
+        </div>
+
+        <div class="fund-control">
+            <h3 style="margin-bottom: 20px; color: #f39c12;">💸 Local Fund Control</h3>
+            
+            <div class="fund-allocation">
+                <div class="allocation-item">
+                    <h4>USD Balance</h4>
+                    <div class="amount">$1,000,000</div>
+                </div>
+                <div class="allocation-item">
+                    <h4>BTC Value</h4>
+                    <div class="amount">$560,250</div>
+                </div>
+                <div class="allocation-item">
+                    <h4>ETH Value</h4>
+                    <div class="amount">$137,340</div>
+                </div>
+                <div class="allocation-item">
+                    <h4>USDT Value</h4>
+                    <div class="amount">$125,000</div>
+                </div>
+                <div class="allocation-item">
+                    <h4>BNB Value</h4>
+                    <div class="amount">$267,000</div>
+                </div>
+            </div>
+
+            <button id="redistribute-btn" class="btn btn-warning">🔄 Redistribute Funds Locally</button>
+            <button id="consolidate-btn" class="btn btn-success">📊 Consolidate All Funds</button>
+            <button id="lock-permanent-btn" class="btn btn-danger">🔒 Permanent Lock</button>
+            
+            <div id="control-message"></div>
+        </div>
+
+        <div class="transaction-history">
+            <h3 style="margin-bottom: 20px; color: #f39c12;">📜 Local Transaction History</h3>
+            <div id="transaction-list">
+                <div class="transaction-item local">
+                    <div>
+                        <strong>$2,089,590</strong>
+                        <p>Local Storage Consolidation</p>
+                    </div>
+                    <div>
+                        <span style="color: #27ae60;">● Stored Locally</span>
+                        <p>Just now</p>
+                    </div>
+                </div>
+                <div class="transaction-item local">
+                    <div>
+                        <strong>$1,000,000</strong>
+                        <p>USD Balance Local Storage</p>
+                    </div>
+                    <div>
+                        <span style="color: #27ae60;">● Stored Locally</span>
+                        <p>Just now</p>
+                    </div>
+                </div>
+                <div class="transaction-item local">
+                    <div>
+                        <strong>$560,250</strong>
+                        <p>BTC Holdings Local Storage</p>
+                    </div>
+                    <div>
+                        <span style="color: #27ae60;">● Stored Locally</span>
+                        <p>Just now</p>
+                    </div>
+                </div>
+                <div class="transaction-item local">
+                    <div>
+                        <strong>$137,340</strong>
+                        <p>ETH Holdings Local Storage</p>
+                    </div>
+                    <div>
+                        <span style="color: #27ae60;">● Stored Locally</span>
+                        <p>Just now</p>
+                    </div>
+                </div>
+                <div class="transaction-item local">
+                    <div>
+                        <strong>$125,000</strong>
+                        <p>USDT Holdings Local Storage</p>
+                    </div>
+                    <div>
+                        <span style="color: #27ae60;">● Stored Locally</span>
+                        <p>Just now</p>
+                    </div>
+                </div>
+                <div class="transaction-item local">
+                    <div>
+                        <strong>$267,000</strong>
+                        <p>BNB Holdings Local Storage</p>
+                    </div>
+                    <div>
+                        <span style="color: #27ae60;">● Stored Locally</span>
+                        <p>Just now</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button id="export-local-btn" class="btn btn-success">💾 Export Local Ledger</button>
+            <button id="verify-integrity-btn" class="btn btn-warning">🔍 Verify Integrity</button>
+        </div>
+    </div>
+
+    <script>
+        // Local system state
+        let localFunds = {
+            USD: 1000000,
+            BTC: { amount: 12.45, value: 560250 },
+            ETH: { amount: 45.78, value: 137340 },
+            USDT: { amount: 125000, value: 125000 },
+            BNB: { amount: 890, value: 267000 }
+        };
+
+        let transactions = [];
+        let systemPermanentlyLocked = false;
+
+        // DOM elements
+        const totalBalance = document.getElementById('total-balance');
+        const controlMessage = document.getElementById('control-message');
+        const transactionList = document.getElementById('transaction-list');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateTotalBalance();
+            addTransaction('System Initialized', 'Local vault created', 2089590);
+        });
+
+        // Redistribute funds locally
+        document.getElementById('redistribute-btn').addEventListener('click', () => {
+            if (systemPermanentlyLocked) {
+                showMessage(controlMessage, 'System is permanently locked', 'warning');
+                return;
+            }
+
+            showMessage(controlMessage, 'Redistributing funds locally...', 'warning');
+            
+            setTimeout(() => {
+                // Redistribute logic
+                const total = 2089590;
+                localFunds.USD = total * 0.3;
+                localFunds.BTC.value = total * 0.25;
+                localFunds.ETH.value = total * 0.2;
+                localFunds.USDT.value = total * 0.15;
+                localFunds.BNB.value = total * 0.1;
+                
+                updateTotalBalance();
+                addTransaction('Local Redistribution', 'Funds redistributed locally', total);
+                showMessage(controlMessage, '✅ Funds redistributed locally', 'success');
+            }, 1500);
+        });
+
+        // Consolidate all funds
+        document.getElementById('consolidate-btn').addEventListener('click', () => {
+            if (systemPermanentlyLocked) {
+                showMessage(controlMessage, 'System is permanently locked', 'warning');
+                return;
+            }
+
+            showMessage(controlMessage, 'Consolidating all funds...', 'warning');
+            
+            setTimeout(() => {
+                const total = 2089590;
+                localFunds.USD = total;
+                localFunds.BTC.value = 0;
+                localFunds.ETH.value = 0;
+                localFunds.USDT.value = 0;
+                localFunds.BNB.value = 0;
+                
+                updateTotalBalance();
+                addTransaction('Full Consolidation', 'All funds consolidated to USD', total);
+                showMessage(controlMessage, '✅ All funds consolidated locally', 'success');
+            }, 1500);
+        });
+
+        // Permanent lock
+        document.getElementById('lock-permanent-btn').addEventListener('click', () => {
+            if (confirm('⚠️ PERMANENT LOCK: This will permanently lock all funds locally. No external access possible. Continue?')) {
+                systemPermanentlyLocked = true;
+                document.querySelectorAll('.btn').forEach(btn => btn.disabled = true);
+                showMessage(controlMessage, '🔒 SYSTEM PERMANENTLY LOCKED - Funds secured locally', 'success');
+                addTransaction('Permanent Lock', 'System permanently locked', 2089590);
+                
+                // Update status
+                document.querySelector('.system-status').innerHTML = '🔒 PERMANENTLY LOCKED';
+                document.querySelector('.system-status').style.background = 'rgba(231, 76, 60, 0.9)';
+            }
+        });
+
+        // Export local ledger
+        document.getElementById('export-local-btn').addEventListener('click', () => {
+            const ledgerData = {
+                timestamp: new Date().toISOString(),
+                totalBalance: 2089590,
+                funds: localFunds,
+                transactions: transactions,
+                systemStatus: 'LOCAL_ONLY',
+                locked: systemPermanentlyLocked
+            };
+
+            const blob = new Blob([JSON.stringify(ledgerData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `local-ledger-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showMessage(controlMessage, '✅ Local ledger exported', 'success');
+        });
+
+        // Verify integrity
+        document.getElementById('verify-integrity-btn').addEventListener('click', () => {
+            showMessage(controlMessage, 'Verifying local integrity...', 'warning');
+            
+            setTimeout(() => {
+                const total = localFunds.USD + localFunds.BTC.value + localFunds.ETH.value + localFunds.USDT.value + localFunds.BNB.value;
+                const integrity = total === 2089590;
+                
+                showMessage(controlMessage, integrity ? '✅ Integrity verified - All funds accounted for locally' : '❌ Integrity check failed', integrity ? 'success' : 'warning');
+                addTransaction('Integrity Check', integrity ? 'PASSED' : 'FAILED', total);
+            }, 1000);
+        });
+
+        function updateTotalBalance() {
+            const total = localFunds.USD + localFunds.BTC.value + localFunds.ETH.value + localFunds.USDT.value + localFunds.BNB.value;
+            totalBalance.textContent = `$${total.toLocaleString()}`;
+        }
+
+        function addTransaction(type, description, amount) {
+            const transaction = {
+                id: Date.now(),
+                type: type,
+                description: description,
+                amount: amount,
+                timestamp: new Date(),
+                status: 'local'
+            };
+
+            transactions.unshift(transaction);
+            updateTransactionList();
+        }
+
+        function updateTransactionList() {
+            const html = transactions.slice(0, 10).map(t => `
+                <div class="transaction-item local">
+                    <div>
+                        <strong>$${t.amount.toLocaleString()}</strong>
+                        <p>${t.description}</p>
+                    </div>
+                    <div>
+                        <span style="color: #27ae60;">● ${t.type}</span>
+                        <p>${formatTime(t.timestamp)}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            transactionList.innerHTML = html;
+        }
+
+        function showMessage(element, message, type) {
+            element.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+            setTimeout(() => {
+                element.innerHTML = '';
+            }, 5000);
+        }
+
+        function formatTime(timestamp) {
+            const now = new Date();
+            const diff = now - timestamp;
+            const minutes = Math.floor(diff / 60000);
+            
+            if (minutes < 1) return 'Just now';
+            if (minutes < 60) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+            
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+            
+            return timestamp.toLocaleDateString();
+        }
+    </script>
+</body>
+</html>

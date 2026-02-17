@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEO Admin Dashboard - Advancia Pay Ledger</title>
+    <meta name="author" content="CEO Madubugwu Chinemelum - Advancia Pay Ledger">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #475569 75%, #64748b 100%);
+            min-height: 100vh;
+            color: #f1f5f9;
+        }
+        
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .dashboard-container {
+            display: none;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .login-form {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 48px;
+            width: 100%;
+            max-width: 480px;
+        }
+        
+        .ceo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 32px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #f1f5f9;
+            font-weight: 600;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #f1f5f9;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #ef4444;
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+        }
+        
+        .login-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(239, 68, 68, 0.3);
+        }
+        
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+        
+        .dashboard-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+        
+        .balance-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #10b981;
+            margin-bottom: 16px;
+        }
+        
+        .transfer-form {
+            display: grid;
+            gap: 16px;
+        }
+        
+        .transfer-input {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #f1f5f9;
+            font-size: 14px;
+        }
+        
+        .crypto-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .crypto-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .crypto-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 8px;
+        }
+        
+        .crypto-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        
+        .action-button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+        }
+        
+        .user-restrictions {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+        
+        .restriction-title {
+            font-weight: 700;
+            color: #ef4444;
+            margin-bottom: 16px;
+        }
+        
+        .restriction-list {
+            list-style: none;
+        }
+        
+        .restriction-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            color: #f1f5f9;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Container -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-form">
+            <div class="ceo-badge">
+                <span>👑</span>
+                CEO ADMINISTRATIVE ACCESS
+            </div>
+            <div class="title">CEO Dashboard</div>
+            <div class="subtitle">Advancia Pay Ledger - Administrative Control</div>
+            
+            <div id="loginMessage"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="adminEmail">Admin Email</label>
+                    <input 
+                        type="email" 
+                        id="adminEmail" 
+                        class="form-input" 
+                        placeholder="admin@advanciapayledger.com"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="adminPassword">Admin Password</label>
+                    <input 
+                        type="password" 
+                        id="adminPassword" 
+                        class="form-input" 
+                        placeholder="Enter admin password"
+                        required
+                    >
+                </div>
+                
+                <button type="submit" class="login-button">
+                    🚀 Access CEO Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Dashboard Container -->
+    <div class="dashboard-container" id="dashboardContainer">
+        <div class="dashboard-header">
+            <div class="ceo-badge">
+                <span>👑</span>
+                CEO ADMINISTRATIVE DASHBOARD
+            </div>
+            <div class="dashboard-title">CEO Control Center</div>
+            <div class="subtitle">Million-Dollar Transfers & Crypto Conversion</div>
+        </div>
+        
+        <div class="dashboard-grid">
+            <!-- Balance Card -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon">💰</div>
+                    <div class="card-title">Available Balance</div>
+                </div>
+                <div class="balance-display">$1,000,000.00</div>
+                <div class="action-button" onclick="refreshBalance()">🔄 Refresh Balance</div>
+            </div>
+            
+            <!-- Transfer Card -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon">💸</div>
+                    <div class="card-title">Million-Dollar Transfer</div>
+                </div>
+                <div id="transferMessage"></div>
+                <form class="transfer-form" id="transferForm">
+                    <input type="email" class="transfer-input" placeholder="Recipient Email" required>
+                    <input type="number" class="transfer-input" placeholder="Amount (USD)" min="1" max="1000000" required>
+                    <select class="transfer-input">
+                        <option value="transfer">Transfer</option>
+                        <option value="withdraw">Withdraw</option>
+                        <option value="send">Send</option>
+                    </select>
+                    <button type="submit" class="action-button">💸 Execute Transfer</button>
+                </form>
+            </div>
+            
+            <!-- Crypto Conversion Card -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon">🪙</div>
+                    <div class="card-title">Crypto Conversion</div>
+                </div>
+                <div id="cryptoMessage"></div>
+                <form class="transfer-form" id="cryptoForm">
+                    <input type="number" class="transfer-input" placeholder="Amount (USD)" min="1" required>
+                    <select class="transfer-input" id="cryptoType">
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="ETH">Ethereum (ETH)</option>
+                        <option value="USDT">Tether (USDT)</option>
+                        <option value="BNB">Binance Coin (BNB)</option>
+                    </select>
+                    <select class="transfer-input" id="targetCurrency">
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="NGN">NGN</option>
+                    </select>
+                    <button type="submit" class="action-button">🔄 Convert Crypto</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Crypto Holdings Display -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="card-icon">💎</div>
+                <div class="card-title">Crypto Holdings</div>
+            </div>
+            <div class="crypto-grid">
+                <div class="crypto-card">
+                    <div class="crypto-amount">12.45 BTC</div>
+                    <div class="crypto-label">Bitcoin</div>
+                </div>
+                <div class="crypto-card">
+                    <div class="crypto-amount">45.78 ETH</div>
+                    <div class="crypto-label">Ethereum</div>
+                </div>
+                <div class="crypto-card">
+                    <div class="crypto-amount">125,000 USDT</div>
+                    <div class="crypto-label">Tether</div>
+                </div>
+                <div class="crypto-card">
+                    <div class="crypto-amount">890 BNB</div>
+                    <div class="crypto-label">Binance Coin</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Infrastructure Restrictions -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="card-icon">🔒</div>
+                <div class="card-title">User Infrastructure Restrictions</div>
+            </div>
+            <div class="user-restrictions">
+                <div class="restriction-title">🚫 Backend User Restrictions Active</div>
+                <ul class="restriction-list">
+                    <li class="restriction-item">
+                        <span class="status-indicator"></span>
+                        Direct database access blocked
+                    </li>
+                    <li class="restriction-item">
+                        <span class="status-indicator"></span>
+                        API rate limiting enforced
+                    </li>
+                    <li class="restriction-item">
+                        <span class="status-indicator"></span>
+                        Transaction limits applied
+                    </li>
+                    <li class="restriction-item">
+                        <span class="status-indicator"></span>
+                        Crypto conversion restricted
+                    </li>
+                    <li class="restriction-item">
+                        <span class="status-indicator"></span>
+                        Withdrawal limits enforced
+                    </li>
+                    <li class="restriction-item">
+                        <span class="status-indicator"></span>
+                        Backend infrastructure protected
+                    </li>
+                </ul>
+            </div>
+            <div class="action-button" onclick="toggleRestrictions()">🔧 Modify Restrictions</div>
+        </div>
+    </div>
+    
+    <script>
+        // CEO Admin Dashboard System
+        let isAdminLoggedIn = false;
+        let currentBalance = 1000000;
+        
+        // Login System
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const messageDiv = document.getElementById('loginMessage');
+            
+            // CEO Admin credentials
+            if (email === 'admin@advanciapayledger.com' && password === 'CEO2026!') {
+                isAdminLoggedIn = true;
+                messageDiv.innerHTML = '<div class="success-message">✅ CEO Admin access granted!</div>';
+                
+                setTimeout(() => {
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('dashboardContainer').style.display = 'block';
+                    console.log('CEO Admin Dashboard Accessed - Madubugwu Chinemelum');
+                }, 1500);
+            } else {
+                messageDiv.innerHTML = '<div class="error-message">❌ Invalid admin credentials</div>';
+            }
+        });
+        
+        // Transfer System
+        document.getElementById('transferForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!isAdminLoggedIn) {
+                document.getElementById('transferMessage').innerHTML = '<div class="error-message">❌ Admin access required</div>';
+                return;
+            }
+            
+            const formData = new FormData(e.target);
+            const recipient = formData.get('email') || e.target[0].value;
+            const amount = parseFloat(e.target[1].value);
+            const type = e.target[2].value;
+            
+            if (amount > currentBalance) {
+                document.getElementById('transferMessage').innerHTML = '<div class="error-message">❌ Insufficient balance</div>';
+                return;
+            }
+            
+            // Execute transfer
+            currentBalance -= amount;
+            document.getElementById('transferMessage').innerHTML = '<div class="success-message">✅ Transfer executed successfully!</div>';
+            
+            console.log('CEO TRANSFER EXECUTED:');
+            console.log('- CEO: Madubugwu Chinemelum');
+            console.log('- Type:', type);
+            console.log('- Amount:', '$' + amount.toLocaleString());
+            console.log('- Recipient:', recipient);
+            console.log('- Date:', new Date().toISOString());
+            
+            // Update balance display
+            document.querySelector('.balance-display').textContent = '$' + currentBalance.toLocaleString() + '.00';
+            
+            // Reset form
+            e.target.reset();
+        });
+        
+        // Crypto Conversion System
+        document.getElementById('cryptoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!isAdminLoggedIn) {
+                document.getElementById('cryptoMessage').innerHTML = '<div class="error-message">❌ Admin access required</div>';
+                return;
+            }
+            
+            const amount = parseFloat(e.target[0].value);
+            const cryptoType = document.getElementById('cryptoType').value;
+            const targetCurrency = document.getElementById('targetCurrency').value;
+            
+            // Mock conversion rates
+            const conversionRates = {
+                BTC: { USD: 45000, EUR: 41000, NGN: 18500000 },
+                ETH: { USD: 3000, EUR: 2750, NGN: 1230000 },
+                USDT: { USD: 1, EUR: 0.92, NGN: 410 },
+                BNB: { USD: 300, EUR: 275, NGN: 123000 }
+            };
+            
+            const convertedAmount = amount * conversionRates[cryptoType][targetCurrency];
+            
+            document.getElementById('cryptoMessage').innerHTML = '<div class="success-message">✅ Crypto conversion successful! Converted to ' + targetCurrency + ': ' + convertedAmount.toLocaleString() + '</div>';
+            
+            console.log('CEO CRYPTO CONVERSION:');
+            console.log('- CEO: Madubugwu Chinemelum');
+            console.log('- Amount:', '$' + amount.toLocaleString());
+            console.log('- From:', cryptoType);
+            console.log('- To:', targetCurrency);
+            console.log('- Result:', convertedAmount.toLocaleString() + ' ' + targetCurrency);
+            console.log('- Date:', new Date().toISOString());
+            
+            // Reset form
+            e.target.reset();
+        });
+        
+        function refreshBalance() {
+            console.log('CEO Balance Refresh - Current: $' + currentBalance.toLocaleString());
+            document.querySelector('.balance-display').textContent = '$' + currentBalance.toLocaleString() + '.00';
+        }
+        
+        function toggleRestrictions() {
+            console.log('CEO Action: Modifying user infrastructure restrictions');
+            alert('CEO User Restriction Controls - Backend Infrastructure Protection');
+        }
+        
+        // CEO Status Monitoring
+        setInterval(() => {
+            if (isAdminLoggedIn) {
+                console.log('CEO Dashboard Active - Madubugwu Chinemelum');
+                console.log('- Balance: $' + currentBalance.toLocaleString());
+                console.log('- Transfers: Available');
+                console.log('- Crypto Conversion: Available');
+                console.log('- User Restrictions: Active');
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

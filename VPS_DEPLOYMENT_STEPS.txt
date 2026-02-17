@@ -1,0 +1,50 @@
+# STEP-BY-STEP VPS DEPLOYMENT GUIDE
+# Run these commands to deploy Advancia PayLedger to your Ubuntu VPS
+
+## STEP 1: Connect to your VPS
+ssh root@76.13.77.8
+# Password: gXF?5ZPRwVNRTv4
+
+## STEP 2: Download and run Ubuntu setup script
+wget https://raw.githubusercontent.com/advancia-devuser/advanciapayledger-new/main/ubuntu-setup.sh
+chmod +x ubuntu-setup.sh
+bash ubuntu-setup.sh
+
+# OR if wget doesn't work, manually paste the script:
+cat > ubuntu-setup.sh << 'EOF'
+# (Paste the entire ubuntu-setup.sh content here)
+EOF
+chmod +x ubuntu-setup.sh
+bash ubuntu-setup.sh
+
+## STEP 3: Clone your project (or upload it)
+cd /opt/advancia
+git clone https://github.com/advancia-devuser/advanciapayledger-new.git
+
+# OR if Git doesn't work, upload via SCP from your Windows machine:
+# (On Windows): scp -r advanciapayledger-new root@76.13.77.8:/opt/advancia/
+
+## STEP 4: Configure environment
+cd /opt/advancia/advanciapayledger-new
+cp .env.template .env
+nano .env
+# Fill in your database credentials, JWT secrets, API keys, etc.
+
+## STEP 5: Deploy with Docker
+docker compose up -d --build
+
+## STEP 6: Check status
+docker ps
+docker logs advancia-frontend -f
+docker logs advancia-backend -f
+
+## STEP 7: Access your application
+# Frontend: http://76.13.77.8:3000
+# Backend API: http://76.13.77.8:3001
+
+## OPTIONAL: Setup domain and SSL
+# If you have a domain pointing to 76.13.77.8:
+nano /etc/nginx/sites-available/advancia
+# Update server_name with your domain
+systemctl reload nginx
+certbot --nginx -d yourdomain.com

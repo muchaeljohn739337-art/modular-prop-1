@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEO Admin Management - Advancia Pay Ledger</title>
+    <meta name="author" content="CEO Madubugwu Chinemelum - Advancia Pay Ledger">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #475569 75%, #64748b 100%);
+            min-height: 100vh;
+            color: #f1f5f9;
+            padding: 20px;
+        }
+        
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+        
+        .ceo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        
+        .title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 32px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+        
+        .card-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        
+        .action-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+        }
+        
+        .management-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-table {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .user-table th {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #f1f5f9;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-table td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #e2e8f0;
+        }
+        
+        .user-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .role-ceo {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+        }
+        
+        .role-admin {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+        }
+        
+        .role-user {
+            background: linear-gradient(135deg, #64748b, #94a3b8);
+            color: white;
+        }
+        
+        .status-active {
+            color: #10b981;
+            font-weight: 600;
+        }
+        
+        .status-inactive {
+            color: #ef4444;
+            font-weight: 600;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .mini-button {
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #f1f5f9;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .mini-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .control-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .control-title {
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 12px;
+        }
+        
+        .control-description {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 16px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #475569;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .toggle-switch.active {
+            background: #10b981;
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+        }
+        
+        .toggle-switch.active::after {
+            transform: translateX(30px);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-table {
+                font-size: 0.9rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="header">
+            <div class="ceo-badge">
+                <span>👑</span>
+                CEO ADMINISTRATIVE CONTROL
+            </div>
+            <div class="title">CEO Admin Management</div>
+            <div class="subtitle">Complete Administrative Control - CEO Madubugwu Chinemelum</div>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon">👥</div>
+                    <div class="card-title">User Management</div>
+                </div>
+                <div class="card-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">1,247</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Admins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1,234</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">13</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                </div>
+                <button class="action-button" onclick="openUserManagement()">Manage Users</button>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon">🔐</div>
+                    <div class="card-title">Security Control</div>
+                </div>
+                <div class="card-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">98%</div>
+                        <div class="stat-label">Security Score</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Threats</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">24/7</div>
+                        <div class="stat-label">Monitoring</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">ON</div>
+                        <div class="stat-label">AI Protection</div>
+                    </div>
+                </div>
+                <button class="action-button" onclick="openSecurityControl()">Security Settings</button>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon">💰</div>
+                    <div class="card-title">Financial Control</div>
+                </div>
+                <div class="card-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">$2.4M</div>
+                        <div class="stat-label">Total Volume</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">847</div>
+                        <div class="stat-label">Transactions</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">100%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Disputes</div>
+                    </div>
+                </div>
+                <button class="action-button" onclick="openFinancialControl">Financial Admin</button>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon">🏠</div>
+                    <div class="card-title">HELOC Control</div>
+                </div>
+                <div class="card-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">Active Plans</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">$847K</div>
+                        <div class="stat-label">Total Value</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">100%</div>
+                        <div class="stat-label">Compliance</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Issues</div>
+                    </div>
+                </div>
+                <button class="action-button" onclick="openHeloControl()">HELOC Admin</button>
+            </div>
+        </div>
+        
+        <div class="management-section">
+            <div class="section-title">
+                <span>👥</span>
+                User Management
+            </div>
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Madubugwu Chinemelum</strong></td>
+                        <td>ceo@advanciapayledger.com</td>
+                        <td><span class="role-badge role-ceo">CEO</span></td>
+                        <td><span class="status-active">Active</span></td>
+                        <td>2026-01-19</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="mini-button">View</button>
+                                <button class="mini-button">Edit</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Admin User</strong></td>
+                        <td>admin@advanciapayledger.com</td>
+                        <td><span class="role-badge role-admin">ADMIN</span></td>
+                        <td><span class="status-active">Active</span></td>
+                        <td>2026-01-15</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="mini-button">View</button>
+                                <button class="mini-button">Edit</button>
+                                <button class="mini-button">Suspend</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>John Doe</strong></td>
+                        <td>john@example.com</td>
+                        <td><span class="role-badge role-user">USER</span></td>
+                        <td><span class="status-active">Active</span></td>
+                        <td>2026-01-10</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="mini-button">View</button>
+                                <button class="mini-button">Edit</button>
+                                <button class="mini-button">Suspend</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Jane Smith</strong></td>
+                        <td>jane@example.com</td>
+                        <td><span class="role-badge role-user">USER</span></td>
+                        <td><span class="status-inactive">Inactive</span></td>
+                        <td>2026-01-08</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="mini-button">View</button>
+                                <button class="mini-button">Activate</button>
+                                <button class="mini-button">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="management-section">
+            <div class="section-title">
+                <span>⚙️</span>
+                System Controls
+            </div>
+            <div class="controls-grid">
+                <div class="control-item">
+                    <div class="control-title">🤖 AI System Control</div>
+                    <div class="control-description">
+                        Manage AI systems and Mom AI legacy access
+                    </div>
+                    <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                </div>
+                <div class="control-item">
+                    <div class="control-title">🔐 Security Protocols</div>
+                    <div class="control-description">
+                        Control security measures and threat detection
+                    </div>
+                    <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                </div>
+                <div class="control-item">
+                    <div class="control-title">💳 Payment Processing</div>
+                    <div class="control-description">
+                        Enable/disable payment and transaction processing
+                    </div>
+                    <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                </div>
+                <div class="control-item">
+                    <div class="control-title">🏠 HELOC Operations</div>
+                    <div class="control-description">
+                        Control HELOC plan creation and management
+                    </div>
+                    <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                </div>
+                <div class="control-item">
+                    <div class="control-title">📧 Email Services</div>
+                    <div class="control-description">
+                        Manage email notifications and communications
+                    </div>
+                    <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                </div>
+                <div class="control-item">
+                    <div class="control-title">📊 Analytics</div>
+                    <div class="control-description">
+                        Control data collection and analytics systems
+                    </div>
+                    <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // CEO Admin Management System
+        console.log('CEO ADMIN MANAGEMENT SYSTEM:');
+        console.log('- CEO: Madubugwu Chinemelum');
+        console.log('- Authority: COMPLETE');
+        console.log('- System: ADVANCIA PAY LEDGER');
+        console.log('- Date: ' + new Date().toISOString());
+        
+        function toggleSwitch(element) {
+            element.classList.toggle('active');
+            const isActive = element.classList.contains('active');
+            const title = element.parentElement.querySelector('.control-title').textContent;
+            
+            console.log(`CEO Control: ${title} - ${isActive ? 'ENABLED' : 'DISABLED'}`);
+            
+            // In production, send this to backend
+            fetch('/api/ceo-admin/toggle-control', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    control: title,
+                    status: isActive,
+                    ceo: 'Madubugwu Chinemelum'
+                })
+            });
+        }
+        
+        function openUserManagement() {
+            console.log('CEO Action: Opening User Management');
+            alert('CEO User Management - Full Control Access');
+        }
+        
+        function openSecurityControl() {
+            console.log('CEO Action: Opening Security Control');
+            alert('CEO Security Control - Maximum Authority');
+        }
+        
+        function openFinancialControl() {
+            console.log('CEO Action: Opening Financial Control');
+            alert('CEO Financial Control - Complete Oversight');
+        }
+        
+        function openHeloControl() {
+            console.log('CEO Action: Opening HELOC Control');
+            alert('CEO HELOC Control - Reference 123456789 Authority');
+        }
+        
+        // CEO status monitoring
+        setInterval(() => {
+            console.log('CEO Status: Madubugwu Chinemelum - Admin Management Active');
+            console.log('System Control: CEO Exclusive');
+            console.log('User Management: CEO Controlled');
+            console.log('Security: CEO Protected');
+        }, 30000);
+    </script>
+</body>
+</html>

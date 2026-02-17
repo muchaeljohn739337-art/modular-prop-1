@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advancia Pay Ledger - Fundraising CRM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e5e7eb;
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: #2563eb;
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2563eb;
+            display: block;
+        }
+        
+        .stat-label {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .pipeline-section {
+            padding: 30px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .add-investor-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        
+        .add-investor-btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .pipeline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .stage-column {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .stage-header {
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .prospect { border-left: 4px solid #6b7280; }
+        .contacted { border-left: 4px solid #3b82f6; }
+        .responded { border-left: 4px solid #8b5cf6; }
+        .meeting { border-left: 4px solid #f59e0b; }
+        .diligence { border-left: 4px solid #10b981; }
+        .term-sheet { border-left: 4px solid #ef4444; }
+        .passed { border-left: 4px solid #dc2626; }
+        
+        .investor-card {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            cursor: move;
+            transition: all 0.2s;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .investor-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .investor-name {
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+        
+        .investor-firm {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .investor-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        
+        .next-action {
+            background: #fef3c7;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #92400e;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Advancia Pay Ledger Fundraising CRM</h1>
+            <p>Track your $1.5M seed round - Target: 30 investors in Week 1</p>
+        </div>
+        
+        <div class="stats-bar">
+            <div class="stat-card">
+                <span class="stat-number" id="totalContacted">1</span>
+                <span class="stat-label">Investors Contacted</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="responseRate">0%</span>
+                <span class="stat-label">Response Rate</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="meetingsScheduled">0</span>
+                <span class="stat-label">Meetings Scheduled</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="daysActive">1</span>
+                <span class="stat-label">Days Active</span>
+            </div>
+        </div>
+        
+        <div class="pipeline-section">
+            <div class="section-title">
+                <span>📊 Investor Pipeline</span>
+                <button class="add-investor-btn" onclick="openModal()">+ Add Investor</button>
+            </div>
+            
+            <div class="pipeline-grid">
+                <div class="stage-column">
+                    <div class="stage-header prospect">🎯 Prospects</div>
+                    <div id="prospects"></div>
+                </div>
+                
+                <div class="stage-column">
+                    <div class="stage-header contacted">📧 Contacted</div>
+                    <div id="contacted"></div>
+                </div>
+                
+                <div class="stage-column">
+                    <div class="stage-header responded">💬 Responded</div>
+                    <div id="responded"></div>
+                </div>
+                
+                <div class="stage-column">
+                    <div class="stage-header meeting">📅 Meetings</div>
+                    <div id="meetings"></div>
+                </div>
+                
+                <div class="stage-column">
+                    <div class="stage-header diligence">🔍 Diligence</div>
+                    <div id="diligence"></div>
+                </div>
+                
+                <div class="stage-column">
+                    <div class="stage-header term-sheet">📄 Term Sheet</div>
+                    <div id="termSheet"></div>
+                </div>
+                
+                <div class="stage-column">
+                    <div class="stage-header passed">❌ Passed</div>
+                    <div id="passed"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Investor Modal -->
+    <div id="addInvestorModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Add New Investor</h2>
+            <form id="investorForm">
+                <div class="form-group">
+                    <label>Investor Name *</label>
+                    <input type="text" id="investorName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Firm/Company *</label>
+                    <input type="text" id="investorFirm" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="investorEmail">
+                </div>
+                
+                <div class="form-group">
+                    <label>Stage</label>
+                    <select id="investorStage">
+                        <option value="prospect">Prospect</option>
+                        <option value="contacted">Contacted</option>
+                        <option value="responded">Responded</option>
+                        <option value="meeting">Meeting</option>
+                        <option value="diligence">Diligence</option>
+                        <option value="term-sheet">Term Sheet</option>
+                        <option value="passed">Passed</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Next Action</label>
+                    <textarea id="nextAction" placeholder="e.g., Follow up on Day 4, Schedule call, Send data room"></textarea>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Investor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize investors data
+        let investors = [
+            {
+                id: 1,
+                name: "Jon Weiner",
+                firm: "Oak HC/FT",
+                email: "info@oakhcft.com",
+                stage: "contacted",
+                nextAction: "Follow up Day 4",
+                contactDate: new Date().toISOString()
+            }
+        ];
+        
+        // Load from localStorage
+        function loadInvestors() {
+            const saved = localStorage.getItem('advanciaInvestors');
+            if (saved) {
+                investors = JSON.parse(saved);
+            }
+            renderInvestors();
+            updateStats();
+        }
+        
+        // Save to localStorage
+        function saveInvestors() {
+            localStorage.setItem('advanciaInvestors', JSON.stringify(investors));
+        }
+        
+        // Render investors in pipeline
+        function renderInvestors() {
+            const stages = ['prospects', 'contacted', 'responded', 'meetings', 'diligence', 'termSheet', 'passed'];
+            
+            stages.forEach(stage => {
+                const container = document.getElementById(stage);
+                container.innerHTML = '';
+                
+                const stageInvestors = investors.filter(inv => inv.stage === stage || 
+                    (stage === 'termSheet' && inv.stage === 'term-sheet'));
+                
+                stageInvestors.forEach(investor => {
+                    const card = createInvestorCard(investor);
+                    container.appendChild(card);
+                });
+            });
+        }
+        
+        // Create investor card element
+        function createInvestorCard(investor) {
+            const card = document.createElement('div');
+            card.className = 'investor-card';
+            card.draggable = true;
+            card.dataset.id = investor.id;
+            
+            const daysAgo = investor.contactDate ? 
+                Math.floor((new Date() - new Date(investor.contactDate)) / (1000 * 60 * 60 * 24)) : 0;
+            
+            card.innerHTML = `
+                <div class="investor-name">${investor.name}</div>
+                <div class="investor-firm">${investor.firm}</div>
+                <div class="investor-meta">
+                    <span>${investor.email || 'No email'}</span>
+                    <span class="next-action">${investor.nextAction || 'No action'}</span>
+                </div>
+            `;
+            
+            // Drag and drop
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragend', handleDragEnd);
+            
+            return card;
+        }
+        
+        // Update statistics
+        function updateStats() {
+            const totalContacted = investors.filter(inv => inv.stage !== 'prospect').length;
+            const responded = investors.filter(inv => inv.stage === 'responded' || inv.stage === 'meeting' || inv.stage === 'diligence' || inv.stage === 'term-sheet').length;
+            const meetings = investors.filter(inv => inv.stage === 'meeting' || inv.stage === 'diligence' || inv.stage === 'term-sheet').length;
+            
+            document.getElementById('totalContacted').textContent = totalContacted;
+            document.getElementById('responseRate').textContent = totalContacted > 0 ? 
+                Math.round((responded / totalContacted) * 100) + '%' : '0%';
+            document.getElementById('meetingsScheduled').textContent = meetings;
+            
+            // Calculate days active
+            const firstContact = investors.find(inv => inv.contactDate);
+            if (firstContact) {
+                const days = Math.floor((new Date() - new Date(firstContact.contactDate)) / (1000 * 60 * 60 * 24)) + 1;
+                document.getElementById('daysActive').textContent = days;
+            }
+        }
+        
+        // Modal functions
+        function openModal() {
+            document.getElementById('addInvestorModal').style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('addInvestorModal').style.display = 'none';
+            document.getElementById('investorForm').reset();
+        }
+        
+        // Form submission
+        document.getElementById('investorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newInvestor = {
+                id: Date.now(),
+                name: document.getElementById('investorName').value,
+                firm: document.getElementById('investorFirm').value,
+                email: document.getElementById('investorEmail').value,
+                stage: document.getElementById('investorStage').value,
+                nextAction: document.getElementById('nextAction').value,
+                contactDate: document.getElementById('investorStage').value === 'contacted' ? 
+                    new Date().toISOString() : null
+            };
+            
+            investors.push(newInvestor);
+            saveInvestors();
+            renderInvestors();
+            updateStats();
+            closeModal();
+        });
+        
+        // Drag and drop handlers
+        let draggedElement = null;
+        
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.target.style.opacity = '0.5';
+        }
+        
+        function handleDragEnd(e) {
+            e.target.style.opacity = '';
+        }
+        
+        // Setup drag and drop for stage columns
+        document.querySelectorAll('.stage-column').forEach(column => {
+            column.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.backgroundColor = '#f0f9ff';
+            });
+            
+            column.addEventListener('dragleave', function(e) {
+                this.style.backgroundColor = '#f9fafb';
+            });
+            
+            column.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.backgroundColor = '#f9fafb';
+                
+                if (draggedElement) {
+                    const investorId = parseInt(draggedElement.dataset.id);
+                    const newStage = this.querySelector('.stage-header').classList[1];
+                    
+                    // Update investor stage
+                    const investor = investors.find(inv => inv.id === investorId);
+                    if (investor) {
+                        investor.stage = newStage;
+                        if (newStage === 'contacted' && !investor.contactDate) {
+                            investor.contactDate = new Date().toISOString();
+                        }
+                        saveInvestors();
+                        renderInvestors();
+                        updateStats();
+                    }
+                }
+            });
+        });
+        
+        // Initialize on load
+        window.addEventListener('load', loadInvestors);
+        
+        // Auto-save every 30 seconds
+        setInterval(saveInvestors, 30000);
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('addInvestorModal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADVANCIA APP SYSTEM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: all 0.5s ease;
+        }
+
+        .login-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.9);
+        }
+
+        .login-container {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #fff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ffd700;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #ffd700;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .role-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .role-btn {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .role-btn:hover, .role-btn.selected {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+        }
+
+        .main-app {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .app-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 20px;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-title {
+            font-size: 1.8em;
+            background: linear-gradient(45deg, #fff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-role {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .logout-btn {
+            padding: 8px 20px;
+            background: rgba(255, 0, 0, 0.3);
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 0, 0, 0.5);
+        }
+
+        .app-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255, 215, 0, 0.2);
+            transform: translateX(5px);
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .content-header {
+            margin-bottom: 30px;
+        }
+
+        .content-header h2 {
+            font-size: 2em;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .admin-panel {
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .admin-panel h3 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .admin-btn {
+            padding: 15px 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .admin-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
+
+        .agent-list {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .agent-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid #ffd700;
+        }
+
+        .agent-info {
+            flex: 1;
+        }
+
+        .agent-name {
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+
+        .agent-email {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+        }
+
+        .agent-role {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .create-agent-form {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 0;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #00ff00, #00cc00);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .app-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Login Screen -->
+        <div class="login-screen" id="loginScreen">
+            <div class="login-container">
+                <div class="login-header">
+                    <h1>ADVANCIA APP</h1>
+                    <p>Complete System Management</p>
+                </div>
+                
+                <div class="role-selector">
+                    <div class="role-btn" onclick="selectRole('superadmin')">Super Admin</div>
+                    <div class="role-btn" onclick="selectRole('admin')">Admin</div>
+                    <div class="role-btn" onclick="selectRole('agent')">Agent</div>
+                </div>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <button type="submit" class="login-btn">Login to System</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div class="main-app" id="mainApp" style="display: none;">
+            <header class="app-header">
+                <div class="app-title">ADVANCIA APP SYSTEM</div>
+                <div class="user-info">
+                    <div class="user-role" id="userRole">Super Admin</div>
+                    <div id="userEmail">admin@advancia.com</div>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </header>
+
+            <div class="app-content">
+                <aside class="sidebar">
+                    <h3 style="color: #ffd700; margin-bottom: 20px;">Navigation</h3>
+                    <a href="#" class="nav-item active" onclick="showSection('dashboard')">📊 Dashboard</a>
+                    <a href="#" class="nav-item" onclick="showSection('agents')">👥 Agents</a>
+                    <a href="#" class="nav-item" onclick="showSection('admin')">⚙️ Admin Panel</a>
+                    <a href="#" class="nav-item" onclick="showSection('financial')">💰 Financial</a>
+                    <a href="#" class="nav-item" onclick="showSection('global')">🌍 Global</a>
+                    <a href="#" class="nav-item" onclick="showSection('security')">🔒 Security</a>
+                    <a href="#" class="nav-item" onclick="showSection('settings')">⚙️ Settings</a>
+                </aside>
+
+                <main class="main-content">
+                    <!-- Dashboard Section -->
+                    <div id="dashboard-section">
+                        <div class="content-header">
+                            <h2>System Dashboard</h2>
+                            <p>Complete system overview and management</p>
+                        </div>
+                        
+                        <div class="dashboard-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">3</div>
+                                <div class="stat-label">Active Agents</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">195</div>
+                                <div class="stat-label">Countries</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">100%</div>
+                                <div class="stat-label">System Uptime</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">∞</div>
+                                <div class="stat-label">Profit Potential</div>
+                            </div>
+                        </div>
+
+                        <div class="admin-panel">
+                            <h3>Quick Actions</h3>
+                            <div class="admin-actions">
+                                <button class="admin-btn" onclick="quickAction('sync')">🔄 Sync System</button>
+                                <button class="admin-btn" onclick="quickAction('backup')">💾 Backup</button>
+                                <button class="admin-btn" onclick="quickAction('security')">🔒 Security</button>
+                                <button class="admin-btn" onclick="quickAction('deploy')">🚀 Deploy</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Agents Section -->
+                    <div id="agents-section" style="display: none;">
+                        <div class="content-header">
+                            <h2>Agent Management</h2>
+                            <p>Manage all system agents and administrators</p>
+                        </div>
+
+                        <div class="agent-list">
+                            <h3 style="color: #ffd700; margin-bottom: 20px;">Current Agents</h3>
+                            <div class="agent-item">
+                                <div class="agent-info">
+                                    <div class="agent-name">Super Admin</div>
+                                    <div class="agent-email">superadmin@advancia.com</div>
+                                </div>
+                                <div class="agent-role">Super Admin</div>
+                            </div>
+                            <div class="agent-item">
+                                <div class="agent-info">
+                                    <div class="agent-name">System Admin</div>
+                                    <div class="agent-email">admin@advancia.com</div>
+                                </div>
+                                <div class="agent-role">Admin</div>
+                            </div>
+                            <div class="agent-item">
+                                <div class="agent-info">
+                                    <div class="agent-name">Global Agent</div>
+                                    <div class="agent-email">agent@advancia.com</div>
+                                </div>
+                                <div class="agent-role">Agent</div>
+                            </div>
+                        </div>
+
+                        <div class="create-agent-form">
+                            <h3 style="color: #ffd700; margin-bottom: 20px;">Create New Agent</h3>
+                            <form id="createAgentForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="agentName">Name</label>
+                                        <input type="text" id="agentName" placeholder="Agent name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="agentEmail">Email</label>
+                                        <input type="email" id="agentEmail" placeholder="Agent email" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="agentRole">Role</label>
+                                        <select id="agentRole" required>
+                                            <option value="">Select Role</option>
+                                            <option value="superadmin">Super Admin</option>
+                                            <option value="admin">Admin</option>
+                                            <option value="agent">Agent</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="agentPassword">Password</label>
+                                        <input type="password" id="agentPassword" placeholder="Password" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="submit-btn">Create Agent</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Admin Panel Section -->
+                    <div id="admin-section" style="display: none;">
+                        <div class="content-header">
+                            <h2>Admin Panel</h2>
+                            <p>Complete system administration</p>
+                        </div>
+
+                        <div class="admin-panel">
+                            <h3>System Administration</h3>
+                            <div class="admin-actions">
+                                <button class="admin-btn" onclick="adminAction('users')">👥 User Management</button>
+                                <button class="admin-btn" onclick="adminAction('permissions')">🔐 Permissions</button>
+                                <button class="admin-btn" onclick="adminAction('logs')">📋 System Logs</button>
+                                <button class="admin-btn" onclick="adminAction('backup')">💾 Backup System</button>
+                                <button class="admin-btn" onclick="adminAction('restore')">🔄 Restore System</button>
+                                <button class="admin-btn" onclick="adminAction('maintenance')">🔧 Maintenance</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Other sections (Financial, Global, Security, Settings) -->
+                    <div id="financial-section" style="display: none;">
+                        <div class="content-header">
+                            <h2>Financial Systems</h2>
+                            <p>Advancia PayLedger financial management</p>
+                        </div>
+                        <div class="admin-panel">
+                            <h3>Financial Operations</h3>
+                            <div class="admin-actions">
+                                <button class="admin-btn" onclick="financialAction('transactions')">💰 Transactions</button>
+                                <button class="admin-btn" onclick="financialAction('profits')">📈 Profits</button>
+                                <button class="admin-btn" onclick="financialAction('reports')">📊 Reports</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="global-section" style="display: none;">
+                        <div class="content-header">
+                            <h2>Global Operations</h2>
+                            <p>Worldwide system management</p>
+                        </div>
+                        <div class="admin-panel">
+                            <h3>Global Management</h3>
+                            <div class="admin-actions">
+                                <button class="admin-btn" onclick="globalAction('deploy')">🚀 Deploy</button>
+                                <button class="admin-btn" onclick="globalAction('sync')">🔄 Sync</button>
+                                <button class="admin-btn" onclick="globalAction('monitor')">📊 Monitor</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="security-section" style="display: none;">
+                        <div class="content-header">
+                            <h2>Security Systems</h2>
+                            <p>Complete security management</p>
+                        </div>
+                        <div class="admin-panel">
+                            <h3>Security Operations</h3>
+                            <div class="admin-actions">
+                                <button class="admin-btn" onclick="securityAction('scan')">🔍 Security Scan</button>
+                                <button class="admin-btn" onclick="securityAction('firewall')">🔥 Firewall</button>
+                                <button class="admin-btn" onclick="securityAction('encryption')">🔐 Encryption</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="settings-section" style="display: none;">
+                        <div class="content-header">
+                            <h2>System Settings</h2>
+                            <p>System configuration and preferences</p>
+                        </div>
+                        <div class="admin-panel">
+                            <h3>Settings Management</h3>
+                            <div class="admin-actions">
+                                <button class="admin-btn" onclick="settingsAction('general')">⚙️ General</button>
+                                <button class="admin-btn" onclick="settingsAction('advanced')">🔧 Advanced</button>
+                                <button class="admin-btn" onclick="settingsAction('api')">🌐 API</button>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App state
+        let currentUser = null;
+        let selectedRole = null;
+
+        // Role selection
+        function selectRole(role) {
+            selectedRole = role;
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            
+            // Set default email based on role
+            const emailInput = document.getElementById('email');
+            const defaultEmails = {
+                'superadmin': 'superadmin@advancia.com',
+                'admin': 'admin@advancia.com',
+                'agent': 'agent@advancia.com'
+            };
+            emailInput.value = defaultEmails[role] || '';
+        }
+
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple validation (in real app, this would be server-side)
+            if (email && password && selectedRole) {
+                currentUser = {
+                    email: email,
+                    role: selectedRole,
+                    name: email.split('@')[0]
+                };
+                
+                // Show main app
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainApp').style.display = 'flex';
+                
+                // Update user info
+                document.getElementById('userRole').textContent = selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1);
+                document.getElementById('userEmail').textContent = email;
+                
+                // Show/hide admin features based on role
+                updateUIForRole(selectedRole);
+            }
+        });
+
+        // Update UI based on user role
+        function updateUIForRole(role) {
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            if (role === 'agent') {
+                // Hide admin panel for agents
+                navItems.forEach(item => {
+                    if (item.textContent.includes('Admin Panel')) {
+                        item.style.display = 'none';
+                    }
+                });
+            } else {
+                // Show all for admin and super admin
+                navItems.forEach(item => {
+                    item.style.display = 'block';
+                });
+            }
+        }
+
+        // Show section
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('[id$="-section"]').forEach(sec => {
+                sec.style.display = 'none';
+            });
+            
+            // Show selected section
+            const selectedSection = document.getElementById(section + '-section');
+            if (selectedSection) {
+                selectedSection.style.display = 'block';
+            }
+            
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Logout
+        function logout() {
+            currentUser = null;
+            selectedRole = null;
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('loginForm').reset();
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+        }
+
+        // Quick actions
+        function quickAction(action) {
+            alert(`Quick Action: ${action.toUpperCase()} executed successfully`);
+        }
+
+        // Admin actions
+        function adminAction(action) {
+            alert(`Admin Action: ${action.toUpperCase()} executed successfully`);
+        }
+
+        // Financial actions
+        function financialAction(action) {
+            alert(`Financial Action: ${action.toUpperCase()} executed successfully`);
+        }
+
+        // Global actions
+        function globalAction(action) {
+            alert(`Global Action: ${action.toUpperCase()} executed successfully`);
+        }
+
+        // Security actions
+        function securityAction(action) {
+            alert(`Security Action: ${action.toUpperCase()} executed successfully`);
+        }
+
+        // Settings actions
+        function settingsAction(action) {
+            alert(`Settings Action: ${action.toUpperCase()} executed successfully`);
+        }
+
+        // Create agent form
+        document.getElementById('createAgentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('agentName').value;
+            const email = document.getElementById('agentEmail').value;
+            const role = document.getElementById('agentRole').value;
+            const password = document.getElementById('agentPassword').value;
+            
+            // Add new agent to the list (in real app, this would be sent to server)
+            const agentList = document.querySelector('.agent-list');
+            const newAgent = document.createElement('div');
+            newAgent.className = 'agent-item';
+            newAgent.innerHTML = `
+                <div class="agent-info">
+                    <div class="agent-name">${name}</div>
+                    <div class="agent-email">${email}</div>
+                </div>
+                <div class="agent-role">${role.charAt(0).toUpperCase() + role.slice(1)}</div>
+            `;
+            agentList.appendChild(newAgent);
+            
+            // Reset form
+            this.reset();
+            alert(`Agent ${name} created successfully`);
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-select super admin role
+            selectRole('superadmin');
+            document.querySelector('.role-btn').classList.add('selected');
+        });
+    </script>
+</body>
+</html>

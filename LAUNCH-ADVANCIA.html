@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advancia Pay Ledger - Launch Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6); }
+            50% { box-shadow: 0 0 60px rgba(59, 130, 246, 0.9); }
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hover-scale {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen flex items-center justify-center">
+    <div class="text-center">
+        <!-- Logo -->
+        <div class="mb-8">
+            <div class="w-32 h-32 mx-auto bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center pulse-glow">
+                <svg class="w-20 h-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+            </div>
+        </div>
+        
+        <!-- Title -->
+        <h1 class="text-5xl font-bold mb-4 text-gradient">Advancia Pay Ledger</h1>
+        <p class="text-xl text-gray-300 mb-12">Stripe for Healthcare using Blockchain</p>
+        
+        <!-- Launch Button -->
+        <button 
+            onclick="launchPlatform()" 
+            class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-12 py-6 rounded-xl text-xl font-semibold hover-scale pulse-glow mb-6"
+        >
+            🚀 Launch Platform Preview
+        </button>
+        
+        <!-- Admin Console Button -->
+        <button 
+            onclick="launchAdminConsole()" 
+            class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-12 py-6 rounded-xl text-xl font-semibold hover-scale mb-8"
+        >
+            🛡️ Admin Console
+        </button>
+        
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12">
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                <div class="text-3xl font-bold text-blue-400">$247K</div>
+                <div class="text-gray-300">Monthly Revenue</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                <div class="text-3xl font-bold text-green-400">82%</div>
+                <div class="text-gray-300">Cost Reduction</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                <div class="text-3xl font-bold text-purple-400">24</div>
+                <div class="text-gray-300">Active Facilities</div>
+            </div>
+        </div>
+        
+        <!-- Features -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
+                <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-semibold mb-2">Blockchain Payments</h3>
+                <p class="text-sm text-gray-300">Multi-chain crypto processing</p>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
+                <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                </div>
+                <h3 class="font-semibold mb-2">Healthcare Facilities</h3>
+                <p class="text-sm text-gray-300">Hospital & clinic management</p>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
+                <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-semibold mb-2">Real-time Analytics</h3>
+                <p class="text-sm text-gray-300">Advanced dashboard & insights</p>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center">
+                <div class="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-semibold mb-2">HIPAA Compliant</h3>
+                <p class="text-sm text-gray-300">Secure & regulated platform</p>
+            </div>
+        </div>
+        
+        <!-- Footer Info -->
+        <div class="mt-16 text-gray-400">
+            <p class="mb-2">🚀 Production-ready platform with 6 blockchain networks</p>
+            <p class="mb-2">💰 $247K MRR with 42% month-over-month growth</p>
+            <p>🏥 Serving 24 healthcare facilities nationwide</p>
+        </div>
+    </div>
+    
+    <script>
+        function launchPlatform() {
+            // Open the full platform preview
+            window.open('advancia-payledger-preview.html', '_blank');
+        }
+        
+        function launchAdminConsole() {
+            // Open the admin console
+            window.open('admin-console.html', '_blank');
+        }
+        
+        // Auto-launch after 2 seconds for demo
+        setTimeout(() => {
+            console.log('🚀 Advancia Pay Ledger Platform Ready!');
+            console.log('Click "Launch Platform Preview" to see the full platform');
+            console.log('🛡️ Admin Console also available for system management');
+        }, 2000);
+        
+        // Add keyboard shortcut (Ctrl+Enter or Cmd+Enter)
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                launchPlatform();
+            }
+        });
+        
+        // Add keyboard shortcut (Ctrl+Shift+A or Cmd+Shift+A)
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'A') {
+                launchAdminConsole();
+            }
+        });
+    </script>
+</body>
+</html>
