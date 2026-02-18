@@ -108,5 +108,5 @@ jobs:
             git pull origin main
             cd advanciapayledger-new/backend
             npm install
-            npx tsc
+            npm run build
             pm2 restart advancia-backend || pm2 start npm --name advancia-backend -- start
