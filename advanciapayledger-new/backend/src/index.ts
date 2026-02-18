@@ -17,6 +17,7 @@ import healthcareRoutes from './routes/healthcare';
 import paymentRoutes from './routes/payments';
 import userRoutes from './routes/user';
 import adminRoutes from './routes/admin';
+import webhookRoutes from './routes/webhooks';
 import { seedDemoDataIfNeeded } from './demoSeed';
 import { isSupabaseEnabled } from './store';
 
@@ -51,12 +52,25 @@ const authLimiter = rateLimit({
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 
+// Stripe webhooks need raw body — mount BEFORE json middleware
+app.use('/api/webhooks', express.raw({ type: 'application/json' }), webhookRoutes);
+
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Compression
 app.use(compression());
+
+// Cache headers for GET API responses
+app.use('/api', (req, res, next) => {
+  if (req.method === 'GET') {
+    res.set('Cache-Control', 'private, max-age=30, stale-while-revalidate=60');
+  } else {
+    res.set('Cache-Control', 'no-store');
+  }
+  next();
+});
 
 // Logging
 if (process.env.NODE_ENV !== 'production') {

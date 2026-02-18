@@ -9,6 +9,7 @@ const navLinks = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/wallet', label: 'Wallets' },
   { href: '/transactions', label: 'Transactions' },
+  { href: '/payments', label: 'Payments' },
   { href: '/healthcare', label: 'Healthcare' },
 ];
 
