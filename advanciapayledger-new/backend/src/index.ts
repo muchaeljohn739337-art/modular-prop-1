@@ -25,8 +25,13 @@ const PORT = process.env.PORT || 4000;
 
 // Security middleware
 app.use(helmet());
+
+// Parse CORS_ORIGIN (comma-separated) into an array for proper matching
+const corsOrigin = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
+  : '*';
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*',
+  origin: corsOrigin,
   credentials: true
 }));
 
