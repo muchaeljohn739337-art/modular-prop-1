@@ -2,21 +2,15 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { store } from '../store';
+import { getJwtSecret, getJwtExpiresIn, authMiddleware, AuthRequest } from '../middleware/auth';
+import { registerValidation, loginValidation } from '../middleware/validate';
 
 const router = Router();
 
-const getJwtSecret = () => process.env.JWT_SECRET || 'default-secret';
-const getJwtExpiresIn = () => (process.env.JWT_EXPIRES_IN || '7d') as any;
-
 // Register new user
-router.post('/register', async (req: Request, res: Response) => {
+router.post('/register', registerValidation, async (req: Request, res: Response) => {
   try {
     const { email, password, firstName, lastName, phoneNumber } = req.body;
-
-    // Validate input
-    if (!email || !password || !firstName || !lastName) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
 
     // Check if user exists
     const existingUser = await store.findUserByEmail(email);
@@ -42,9 +36,8 @@ router.post('/register', async (req: Request, res: Response) => {
     const token = jwt.sign(
       { userId: user.id, email: user.email },
       getJwtSecret(),
-      { expiresIn: getJwtExpiresIn() }
+      { expiresIn: getJwtExpiresIn() as any }
     );
-
 
     return res.status(201).json({
       message: 'User created successfully',
@@ -63,13 +56,9 @@ router.post('/register', async (req: Request, res: Response) => {
 });
 
 // Login
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', loginValidation, async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password required' });
-    }
 
     // Find user
     const user = await store.findUserByEmail(email);
@@ -87,7 +76,7 @@ router.post('/login', async (req: Request, res: Response) => {
     const token = jwt.sign(
       { userId: user.id, email: user.email },
       getJwtSecret(),
-      { expiresIn: getJwtExpiresIn() }
+      { expiresIn: getJwtExpiresIn() as any }
     );
 
     return res.json({
@@ -108,17 +97,11 @@ router.post('/login', async (req: Request, res: Response) => {
 });
 
 // Get current user
-router.get('/me', async (req: Request, res: Response) => {
+router.get('/me', authMiddleware, async (req: Request, res: Response) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return res.status(401).json({ error: 'No authorization header' });
-    }
+    const userId = (req as AuthRequest).userId!;
 
-    const token = authHeader.split(' ')[1];
-    const decoded: any = jwt.verify(token, getJwtSecret());
-
-    const user = await store.findUserById(decoded.userId);
+    const user = await store.findUserById(userId);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }

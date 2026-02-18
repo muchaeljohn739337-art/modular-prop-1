@@ -1,30 +1,14 @@
 import { Router, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
 import { store } from '../store';
+import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { createSubscriptionValidation } from '../middleware/validate';
 
 const router = Router();
-
-// Middleware to verify JWT
-const authMiddleware = (req: Request, res: Response, next: any) => {
-  try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return res.status(401).json({ error: 'No authorization header' });
-    }
-
-    const token = authHeader.split(' ')[1];
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'default-secret');
-    (req as any).userId = decoded.userId;
-    return next();
-  } catch (error) {
-    return res.status(401).json({ error: 'Invalid token' });
-  }
-};
 
 // Get user's healthcare subscriptions
 router.get('/subscriptions', authMiddleware, async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
+    const userId = (req as AuthRequest).userId!;
     const subscriptions = await store.findHealthcareByUser(userId);
     
     return res.json({ subscriptions });
@@ -35,14 +19,10 @@ router.get('/subscriptions', authMiddleware, async (req: Request, res: Response)
 });
 
 // Create healthcare subscription
-router.post('/subscriptions', authMiddleware, async (req: Request, res: Response) => {
+router.post('/subscriptions', authMiddleware, createSubscriptionValidation, async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).userId;
+    const userId = (req as AuthRequest).userId!;
     const { plan, provider, monthlyPremium, dependents } = req.body;
-
-    if (!plan || !provider || !monthlyPremium) {
-      return res.status(400).json({ error: 'Plan, provider, and premium required' });
-    }
 
     const startDate = new Date();
     const renewalDate = new Date();
