@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { randomUUID } from 'crypto';
 
 // ─── App-level types (camelCase) ────────────────────────────
 export interface User {
@@ -158,6 +159,7 @@ export async function dbCreateUser(
   const { data: row, error } = await sb
     .from('app_users')
     .insert({
+      id: randomUUID(),
       email: data.email,
       password: data.password,
       first_name: data.firstName,
@@ -268,6 +270,7 @@ export async function dbCreateWallet(
   const { data: row, error } = await sb
     .from('app_wallets')
     .insert({
+      id: randomUUID(),
       user_id: data.userId,
       type: data.type,
       currency: data.currency,
@@ -340,6 +343,7 @@ export async function dbCreateTransaction(
   const { data: row, error } = await sb
     .from('app_transactions')
     .insert({
+      id: randomUUID(),
       user_id: data.userId,
       type: data.type,
       currency: data.currency,
@@ -419,6 +423,7 @@ export async function dbCreateHealthcare(
   const { data: row, error } = await sb
     .from('app_healthcare')
     .insert({
+      id: randomUUID(),
       user_id: data.userId,
       plan: data.plan,
       status: data.status,
