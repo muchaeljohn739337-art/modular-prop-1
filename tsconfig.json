@@ -5,43 +5,19 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": false,
+    "noEmit": true,
     "esModuleInterop": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "node16",
+    "moduleResolution": "node16",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/lib/*": ["./src/lib/*"],
-      "@/utils/*": ["./src/utils/*"]
-    },
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "declaration": true,
-    "sourceMap": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.js"
+  "references": [
+    { "path": "./advanciapayledger-new/backend" },
+    { "path": "./advanciapayledger-new/frontend" }
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.spec.ts",
-    "prisma/**/*",
-    "scripts/**/*",
-    "tests/**/*"
-  ]
+  "files": []
 }

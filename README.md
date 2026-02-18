@@ -9,7 +9,7 @@ A full-stack cryptocurrency payment and healthcare management platform with Web3
 ## Tech Stack
 
 | Layer | Technologies |
-|-------|-------------|
+| ------- | ------------- |
 | **Frontend** | Next.js 16 (App Router), React 18, TypeScript, Tailwind CSS, Framer Motion, Zustand, Recharts |
 | **Backend** | Express 4, TypeScript, JWT auth, Helmet, bcrypt, rate limiting |
 | **Web3** | ethers.js v6 (browser wallet connection) |
@@ -28,7 +28,7 @@ A full-stack cryptocurrency payment and healthcare management platform with Web3
 
 ## Project Structure
 
-```
+```text
 advanciapayledger-new/
 ├── frontend/          # Next.js app (deployed to Vercel)
 │   ├── app/
@@ -73,16 +73,16 @@ The backend runs on `http://localhost:4000` by default. The frontend API proxy f
 ### Frontend (Vercel)
 
 | Variable | Required | Description |
-|----------|----------|-------------|
+| ---------- | ---------- | ------------- |
 | `NEXT_PUBLIC_API_URL` | Yes | Backend API base URL |
 | `NEXT_PUBLIC_SUPABASE_URL` | No | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | No | Supabase anonymous key |
 | `NEXT_PUBLIC_ADMIN_EMAILS` | No | Comma-separated admin emails |
 
-### Backend
+### Backend Env Vars
 
 | Variable | Required | Description |
-|----------|----------|-------------|
+| ---------- | ---------- | ------------- |
 | `PORT` | No | Server port (default: 4000) |
 | `JWT_SECRET` | Yes | Secret for JWT signing |
 | `CORS_ORIGIN` | No | Allowed CORS origin |
