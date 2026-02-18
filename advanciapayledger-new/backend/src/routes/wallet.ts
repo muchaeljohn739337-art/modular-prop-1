@@ -25,7 +25,7 @@ const authMiddleware = (req: Request, res: Response, next: any) => {
 router.get('/', authMiddleware, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
-    const wallets = store.findWalletsByUser(userId);
+    const wallets = await store.findWalletsByUser(userId);
     
     return res.json({ wallets });
   } catch (error: any) {
@@ -45,12 +45,12 @@ router.post('/', authMiddleware, async (req: Request, res: Response) => {
     }
 
     // Check if wallet already exists
-    const existingWallet = store.findWallet(userId, currency);
+    const existingWallet = await store.findWallet(userId, currency);
     if (existingWallet) {
       return res.status(409).json({ error: 'Wallet already exists for this currency' });
     }
 
-    const wallet = store.createWallet({
+    const wallet = await store.createWallet({
       userId,
       type,
       currency: currency.toUpperCase(),
@@ -74,7 +74,7 @@ router.get('/:currency', authMiddleware, async (req: Request, res: Response) => 
     const userId = (req as any).userId;
     const currency = String((req.params as any).currency);
 
-    const wallet = store.findWallet(userId, currency.toUpperCase());
+    const wallet = await store.findWallet(userId, currency.toUpperCase());
     
     if (!wallet) {
       return res.status(404).json({ error: 'Wallet not found' });

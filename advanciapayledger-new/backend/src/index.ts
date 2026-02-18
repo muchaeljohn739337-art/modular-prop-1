@@ -18,6 +18,7 @@ import paymentRoutes from './routes/payments';
 import userRoutes from './routes/user';
 import adminRoutes from './routes/admin';
 import { seedDemoDataIfNeeded } from './demoSeed';
+import { isSupabaseEnabled } from './store';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -50,7 +51,11 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('combined'));
 }
 
-console.log('✅ Using in-memory storage (no database required)');
+if (isSupabaseEnabled()) {
+  console.log('✅ Connected to Supabase (persistent storage)');
+} else {
+  console.log('⚠️  Using in-memory storage (no Supabase configured)');
+}
 
 seedDemoDataIfNeeded().catch((err) => {
   console.error('Demo seed failed:', err);
@@ -61,8 +66,7 @@ app.get('/health', (_req, res) => {
   res.json({ 
     status: 'ok', 
     timestamp: new Date().toISOString(),
-    storage: 'in-memory',
-    message: 'No database required'
+    storage: isSupabaseEnabled() ? 'supabase' : 'in-memory',
   });
 });
 
@@ -80,8 +84,7 @@ app.get('/', (_req, res) => {
   res.json({
     message: 'Advancia PayLedger API',
     version: '1.0.0',
-    storage: 'in-memory',
-    note: 'No database required - data stored in memory',
+    storage: isSupabaseEnabled() ? 'supabase' : 'in-memory',
     endpoints: {
       auth: '/api/auth',
       wallet: '/api/wallet',

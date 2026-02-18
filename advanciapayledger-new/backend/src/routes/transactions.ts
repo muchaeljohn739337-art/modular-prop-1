@@ -27,7 +27,7 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const { limit = 50, offset = 0, status, type } = req.query;
 
-    const transactions = store.findTransactionsByUser(userId, {
+    const transactions = await store.findTransactionsByUser(userId, {
       status: status as string,
       type: type as string
     });
@@ -60,13 +60,13 @@ router.post('/', authMiddleware, async (req: Request, res: Response) => {
 
     // Validate sufficient balance for send transactions
     if (type === 'send') {
-      const wallet = store.findWallet(userId, currency);
+      const wallet = await store.findWallet(userId, currency);
       if (!wallet || wallet.balance < amount) {
         return res.status(400).json({ error: 'Insufficient balance' });
       }
     }
 
-    const transaction = store.createTransaction({
+    const transaction = await store.createTransaction({
       userId,
       type,
       currency: currency.toUpperCase(),
@@ -79,20 +79,24 @@ router.post('/', authMiddleware, async (req: Request, res: Response) => {
 
     // Update wallet balance (simplified)
     if (type === 'send') {
-      const wallet = store.findWallet(userId, currency);
+      const wallet = await store.findWallet(userId, currency);
       if (wallet) {
-        store.updateWalletBalance(wallet.id, -(amount + transaction.fee));
+        await store.updateWalletBalance(wallet.id, -(amount + transaction.fee));
       }
     } else if (type === 'receive') {
-      const wallet = store.findWallet(userId, currency);
+      const wallet = await store.findWallet(userId, currency);
       if (wallet) {
-        store.updateWalletBalance(wallet.id, amount);
+        await store.updateWalletBalance(wallet.id, amount);
       }
     }
 
     // Simulate transaction completion after 2 seconds
-    setTimeout(() => {
-      store.updateTransaction(transaction.id, { status: 'completed' });
+    setTimeout(async () => {
+      try {
+        await store.updateTransaction(transaction.id, { status: 'completed' });
+      } catch (err) {
+        console.error('Failed to auto-complete transaction:', err);
+      }
     }, 2000);
 
     return res.status(201).json({
@@ -111,7 +115,7 @@ router.get('/:id', authMiddleware, async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const id = String((req.params as any).id);
 
-    const transaction = store.findTransactionById(id, userId);
+    const transaction = await store.findTransactionById(id, userId);
     
     if (!transaction) {
       return res.status(404).json({ error: 'Transaction not found' });

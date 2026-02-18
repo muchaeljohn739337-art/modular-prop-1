@@ -2,7 +2,6 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { store } from '../store';
-import { isSupabaseEnabled, supabaseUpsertRegisteredUser } from '../supabase';
 
 const router = Router();
 
@@ -20,7 +19,7 @@ router.post('/register', async (req: Request, res: Response) => {
     }
 
     // Check if user exists
-    const existingUser = store.findUserByEmail(email);
+    const existingUser = await store.findUserByEmail(email);
     if (existingUser) {
       return res.status(409).json({ error: 'User already exists' });
     }
@@ -28,8 +27,8 @@ router.post('/register', async (req: Request, res: Response) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create user
-    const user = store.createUser({
+    // Create user (persisted to Supabase when enabled)
+    const user = await store.createUser({
       email,
       password: hashedPassword,
       firstName,
@@ -46,18 +45,6 @@ router.post('/register', async (req: Request, res: Response) => {
       { expiresIn: getJwtExpiresIn() }
     );
 
-    // Optional persistence for admin-only “who registered” view
-    if (isSupabaseEnabled()) {
-      supabaseUpsertRegisteredUser({
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        createdAt: user.createdAt,
-      }).catch((err) => {
-        console.error('Supabase user upsert failed:', err);
-      });
-    }
 
     return res.status(201).json({
       message: 'User created successfully',
@@ -84,8 +71,8 @@ router.post('/login', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Email and password required' });
     }
 
-    // Find user with password field
-    const user = store.findUserByEmail(email);
+    // Find user
+    const user = await store.findUserByEmail(email);
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -131,7 +118,7 @@ router.get('/me', async (req: Request, res: Response) => {
     const token = authHeader.split(' ')[1];
     const decoded: any = jwt.verify(token, getJwtSecret());
 
-    const user = store.findUserById(decoded.userId);
+    const user = await store.findUserById(decoded.userId);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }

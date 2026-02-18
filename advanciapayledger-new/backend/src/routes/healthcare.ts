@@ -25,7 +25,7 @@ const authMiddleware = (req: Request, res: Response, next: any) => {
 router.get('/subscriptions', authMiddleware, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
-    const subscriptions = store.findHealthcareByUser(userId);
+    const subscriptions = await store.findHealthcareByUser(userId);
     
     return res.json({ subscriptions });
   } catch (error: any) {
@@ -48,7 +48,7 @@ router.post('/subscriptions', authMiddleware, async (req: Request, res: Response
     const renewalDate = new Date();
     renewalDate.setFullYear(renewalDate.getFullYear() + 1);
 
-    const subscription = store.createHealthcare({
+    const subscription = await store.createHealthcare({
       userId,
       plan,
       provider,

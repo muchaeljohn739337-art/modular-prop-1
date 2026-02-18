@@ -1,59 +1,24 @@
-// In-memory data store (no database required)
-// Data resets when server restarts
+// Unified data store – uses Supabase (app_* tables) when configured,
+// otherwise falls back to an in-memory store for local development.
 
-interface User {
-  id: string;
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber?: string;
-  avatar?: string;
-  kycVerified: boolean;
-  twoFactorEnabled: boolean;
-  createdAt: Date;
-}
+import {
+  isSupabaseEnabled,
+  dbCreateUser, dbFindUserByEmail, dbFindUserById, dbUpdateUser, dbListUsers,
+  dbCreateWallet, dbFindWalletsByUser, dbFindWallet, dbUpdateWalletBalance,
+  dbCreateTransaction, dbFindTransactionsByUser, dbFindTransactionById, dbUpdateTransaction,
+  dbCreateHealthcare, dbFindHealthcareByUser,
+  dbGetStats,
+} from './supabase';
 
-interface Wallet {
-  id: string;
-  userId: string;
-  type: 'crypto' | 'fiat';
-  currency: string;
-  address?: string;
-  balance: number;
-  createdAt: Date;
-}
+import type {
+  User, Wallet, Transaction, HealthcareSubscription,
+} from './supabase';
 
-interface Transaction {
-  id: string;
-  userId: string;
-  type: 'send' | 'receive' | 'swap' | 'payment' | 'healthcare';
-  currency: string;
-  amount: number;
-  fee: number;
-  status: 'pending' | 'completed' | 'failed' | 'cancelled';
-  fromAddress?: string;
-  toAddress?: string;
-  txHash?: string;
-  metadata?: any;
-  createdAt: Date;
-  updatedAt: Date;
-}
+// Re-export types so route files can import from './store'
+export type { User, Wallet, Transaction, HealthcareSubscription };
+export { isSupabaseEnabled };
 
-interface HealthcareSubscription {
-  id: string;
-  userId: string;
-  plan: 'basic' | 'premium' | 'family' | 'enterprise';
-  status: 'active' | 'inactive' | 'cancelled' | 'suspended';
-  provider: string;
-  policyNumber?: string;
-  startDate: Date;
-  renewalDate: Date;
-  monthlyPremium: number;
-  dependents: number;
-  createdAt: Date;
-}
-
+// ─── In-memory fallback (dev / no Supabase) ─────────────────
 class InMemoryStore {
   private users: Map<string, User> = new Map();
   private wallets: Map<string, Wallet> = new Map();
@@ -65,25 +30,17 @@ class InMemoryStore {
     return (this.idCounter++).toString().padStart(24, '0');
   }
 
-  // User operations
   createUser(data: Omit<User, 'id' | 'createdAt'>): User {
-    const user: User = {
-      ...data,
-      id: this.generateId(),
-      createdAt: new Date()
-    };
+    const user: User = { ...data, id: this.generateId(), createdAt: new Date() };
     this.users.set(user.id, user);
     return user;
   }
-
   findUserByEmail(email: string): User | undefined {
-    return Array.from(this.users.values()).find(u => u.email === email);
+    return Array.from(this.users.values()).find((u) => u.email === email);
   }
-
   findUserById(id: string): User | undefined {
     return this.users.get(id);
   }
-
   updateUser(id: string, data: Partial<User>): User | undefined {
     const user = this.users.get(id);
     if (!user) return undefined;
@@ -91,28 +48,26 @@ class InMemoryStore {
     this.users.set(id, updated);
     return updated;
   }
+  listUsers() {
+    return Array.from(this.users.values()).map((u) => ({
+      id: u.id, email: u.email, firstName: u.firstName, lastName: u.lastName,
+      kycVerified: u.kycVerified, twoFactorEnabled: u.twoFactorEnabled, createdAt: u.createdAt,
+    }));
+  }
 
-  // Wallet operations
   createWallet(data: Omit<Wallet, 'id' | 'createdAt'>): Wallet {
-    const wallet: Wallet = {
-      ...data,
-      id: this.generateId(),
-      createdAt: new Date()
-    };
+    const wallet: Wallet = { ...data, id: this.generateId(), createdAt: new Date() };
     this.wallets.set(wallet.id, wallet);
     return wallet;
   }
-
   findWalletsByUser(userId: string): Wallet[] {
-    return Array.from(this.wallets.values()).filter(w => w.userId === userId);
+    return Array.from(this.wallets.values()).filter((w) => w.userId === userId);
   }
-
   findWallet(userId: string, currency: string): Wallet | undefined {
     return Array.from(this.wallets.values()).find(
-      w => w.userId === userId && w.currency.toUpperCase() === currency.toUpperCase()
+      (w) => w.userId === userId && w.currency.toUpperCase() === currency.toUpperCase()
     );
   }
-
   updateWalletBalance(id: string, amount: number): Wallet | undefined {
     const wallet = this.wallets.get(id);
     if (!wallet) return undefined;
@@ -121,37 +76,22 @@ class InMemoryStore {
     return wallet;
   }
 
-  // Transaction operations
   createTransaction(data: Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>): Transaction {
-    const transaction: Transaction = {
-      ...data,
-      id: this.generateId(),
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    this.transactions.set(transaction.id, transaction);
-    return transaction;
+    const tx: Transaction = { ...data, id: this.generateId(), createdAt: new Date(), updatedAt: new Date() };
+    this.transactions.set(tx.id, tx);
+    return tx;
   }
-
   findTransactionsByUser(userId: string, filters?: { status?: string; type?: string }): Transaction[] {
-    let txs = Array.from(this.transactions.values()).filter(t => t.userId === userId);
-    
-    if (filters?.status) {
-      txs = txs.filter(t => t.status === filters.status);
-    }
-    if (filters?.type) {
-      txs = txs.filter(t => t.type === filters.type);
-    }
-    
+    let txs = Array.from(this.transactions.values()).filter((t) => t.userId === userId);
+    if (filters?.status) txs = txs.filter((t) => t.status === filters.status);
+    if (filters?.type) txs = txs.filter((t) => t.type === filters.type);
     return txs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
-
   findTransactionById(id: string, userId: string): Transaction | undefined {
     const tx = this.transactions.get(id);
     if (!tx || tx.userId !== userId) return undefined;
     return tx;
   }
-
   updateTransaction(id: string, data: Partial<Transaction>): Transaction | undefined {
     const tx = this.transactions.get(id);
     if (!tx) return undefined;
@@ -160,44 +100,98 @@ class InMemoryStore {
     return updated;
   }
 
-  // Healthcare operations
   createHealthcare(data: Omit<HealthcareSubscription, 'id' | 'createdAt'>): HealthcareSubscription {
-    const subscription: HealthcareSubscription = {
-      ...data,
-      id: this.generateId(),
-      createdAt: new Date()
-    };
-    this.healthcare.set(subscription.id, subscription);
-    return subscription;
+    const sub: HealthcareSubscription = { ...data, id: this.generateId(), createdAt: new Date() };
+    this.healthcare.set(sub.id, sub);
+    return sub;
   }
-
   findHealthcareByUser(userId: string): HealthcareSubscription[] {
-    return Array.from(this.healthcare.values()).filter(h => h.userId === userId);
+    return Array.from(this.healthcare.values()).filter((h) => h.userId === userId);
   }
 
-  // Stats
   getStats() {
     return {
-      users: this.users.size,
-      wallets: this.wallets.size,
-      transactions: this.transactions.size,
-      healthcare: this.healthcare.size
+      users: this.users.size, wallets: this.wallets.size,
+      transactions: this.transactions.size, healthcare: this.healthcare.size,
     };
-  }
-
-  // Admin-only: list users (safe fields only)
-  listUsers() {
-    return Array.from(this.users.values()).map((u) => ({
-      id: u.id,
-      email: u.email,
-      firstName: u.firstName,
-      lastName: u.lastName,
-      kycVerified: u.kycVerified,
-      twoFactorEnabled: u.twoFactorEnabled,
-      createdAt: u.createdAt
-    }));
   }
 }
 
-// Export singleton instance
-export const store = new InMemoryStore();
+const memStore = new InMemoryStore();
+
+// ─── Unified async store (Supabase-first, in-memory fallback) ─
+export const store = {
+  // Users
+  async createUser(data: Omit<User, 'id' | 'createdAt'>): Promise<User> {
+    if (isSupabaseEnabled()) return dbCreateUser(data);
+    return memStore.createUser(data);
+  },
+  async findUserByEmail(email: string): Promise<User | undefined> {
+    if (isSupabaseEnabled()) return dbFindUserByEmail(email);
+    return memStore.findUserByEmail(email);
+  },
+  async findUserById(id: string): Promise<User | undefined> {
+    if (isSupabaseEnabled()) return dbFindUserById(id);
+    return memStore.findUserById(id);
+  },
+  async updateUser(id: string, data: Partial<User>): Promise<User | undefined> {
+    if (isSupabaseEnabled()) return dbUpdateUser(id, data);
+    return memStore.updateUser(id, data);
+  },
+  async listUsers() {
+    if (isSupabaseEnabled()) return dbListUsers();
+    return memStore.listUsers();
+  },
+
+  // Wallets
+  async createWallet(data: Omit<Wallet, 'id' | 'createdAt'>): Promise<Wallet> {
+    if (isSupabaseEnabled()) return dbCreateWallet(data);
+    return memStore.createWallet(data);
+  },
+  async findWalletsByUser(userId: string): Promise<Wallet[]> {
+    if (isSupabaseEnabled()) return dbFindWalletsByUser(userId);
+    return memStore.findWalletsByUser(userId);
+  },
+  async findWallet(userId: string, currency: string): Promise<Wallet | undefined> {
+    if (isSupabaseEnabled()) return dbFindWallet(userId, currency);
+    return memStore.findWallet(userId, currency);
+  },
+  async updateWalletBalance(id: string, amount: number): Promise<Wallet | undefined> {
+    if (isSupabaseEnabled()) return dbUpdateWalletBalance(id, amount);
+    return memStore.updateWalletBalance(id, amount);
+  },
+
+  // Transactions
+  async createTransaction(data: Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>): Promise<Transaction> {
+    if (isSupabaseEnabled()) return dbCreateTransaction(data);
+    return memStore.createTransaction(data);
+  },
+  async findTransactionsByUser(userId: string, filters?: { status?: string; type?: string }): Promise<Transaction[]> {
+    if (isSupabaseEnabled()) return dbFindTransactionsByUser(userId, filters);
+    return memStore.findTransactionsByUser(userId, filters);
+  },
+  async findTransactionById(id: string, userId: string): Promise<Transaction | undefined> {
+    if (isSupabaseEnabled()) return dbFindTransactionById(id, userId);
+    return memStore.findTransactionById(id, userId);
+  },
+  async updateTransaction(id: string, data: Partial<Transaction>): Promise<Transaction | undefined> {
+    if (isSupabaseEnabled()) return dbUpdateTransaction(id, data);
+    return memStore.updateTransaction(id, data);
+  },
+
+  // Healthcare
+  async createHealthcare(data: Omit<HealthcareSubscription, 'id' | 'createdAt'>): Promise<HealthcareSubscription> {
+    if (isSupabaseEnabled()) return dbCreateHealthcare(data);
+    return memStore.createHealthcare(data);
+  },
+  async findHealthcareByUser(userId: string): Promise<HealthcareSubscription[]> {
+    if (isSupabaseEnabled()) return dbFindHealthcareByUser(userId);
+    return memStore.findHealthcareByUser(userId);
+  },
+
+  // Stats
+  async getStats() {
+    if (isSupabaseEnabled()) return dbGetStats();
+    return memStore.getStats();
+  },
+};

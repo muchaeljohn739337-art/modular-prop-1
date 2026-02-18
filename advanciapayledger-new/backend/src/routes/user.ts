@@ -27,7 +27,7 @@ router.put('/profile', authMiddleware, async (req: Request, res: Response) => {
     const userId = (req as any).userId;
     const { firstName, lastName, phoneNumber, avatar } = req.body;
 
-    const user = store.updateUser(userId, { 
+    const user = await store.updateUser(userId, { 
       firstName, 
       lastName, 
       phoneNumber, 

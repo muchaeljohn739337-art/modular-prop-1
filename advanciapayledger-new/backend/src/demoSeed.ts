@@ -10,14 +10,14 @@ const shouldSeed = () => {
 export const seedDemoDataIfNeeded = async () => {
   if (!shouldSeed()) return;
 
-  const stats = store.getStats();
+  const stats = await store.getStats();
   if (stats.users > 0) return;
 
   const demoEmail = process.env.DEMO_USER_EMAIL || 'demo@advancia.local';
   const demoPassword = process.env.DEMO_USER_PASSWORD || 'Demo12345!';
   const hashedPassword = await bcrypt.hash(demoPassword, 12);
 
-  const demoUser = store.createUser({
+  const demoUser = await store.createUser({
     email: demoEmail,
     password: hashedPassword,
     firstName: 'Demo',
@@ -28,7 +28,7 @@ export const seedDemoDataIfNeeded = async () => {
     avatar: undefined
   });
 
-  const btcWallet = store.createWallet({
+  const btcWallet = await store.createWallet({
     userId: demoUser.id,
     type: 'crypto',
     currency: 'BTC',
@@ -36,7 +36,7 @@ export const seedDemoDataIfNeeded = async () => {
     balance: 0.125
   });
 
-  const ethWallet = store.createWallet({
+  const ethWallet = await store.createWallet({
     userId: demoUser.id,
     type: 'crypto',
     currency: 'ETH',
@@ -44,14 +44,14 @@ export const seedDemoDataIfNeeded = async () => {
     balance: 2.5
   });
 
-  const usdWallet = store.createWallet({
+  const usdWallet = await store.createWallet({
     userId: demoUser.id,
     type: 'fiat',
     currency: 'USD',
     balance: 1500
   });
 
-  store.createTransaction({
+  await store.createTransaction({
     userId: demoUser.id,
     type: 'receive',
     currency: 'BTC',
@@ -64,7 +64,7 @@ export const seedDemoDataIfNeeded = async () => {
     metadata: { note: 'Demo deposit' }
   });
 
-  store.createTransaction({
+  await store.createTransaction({
     userId: demoUser.id,
     type: 'send',
     currency: 'ETH',
@@ -77,7 +77,7 @@ export const seedDemoDataIfNeeded = async () => {
     metadata: { note: 'Demo payout' }
   });
 
-  store.createTransaction({
+  await store.createTransaction({
     userId: demoUser.id,
     type: 'payment',
     currency: 'USD',
@@ -91,7 +91,7 @@ export const seedDemoDataIfNeeded = async () => {
   const renewalDate = new Date();
   renewalDate.setFullYear(renewalDate.getFullYear() + 1);
 
-  store.createHealthcare({
+  await store.createHealthcare({
     userId: demoUser.id,
     plan: 'premium',
     provider: 'Advancia Demo Provider',
@@ -103,10 +103,10 @@ export const seedDemoDataIfNeeded = async () => {
     policyNumber: 'DEMO-POLICY-0001'
   });
 
-  store.updateWalletBalance(usdWallet.id, -49.99);
-  store.updateWalletBalance(ethWallet.id, -(0.2 + 0.002));
+  await store.updateWalletBalance(usdWallet.id, -49.99);
+  await store.updateWalletBalance(ethWallet.id, -(0.2 + 0.002));
 
-  const seededStats = store.getStats();
+  const seededStats = await store.getStats();
   // eslint-disable-next-line no-console
   console.log(
     `🌱 Demo data seeded: users=${seededStats.users}, wallets=${seededStats.wallets}, transactions=${seededStats.transactions}, healthcare=${seededStats.healthcare}`

@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { store } from '../store';
-import { isSupabaseEnabled, supabaseListRegisteredUsers } from '../supabase';
 
 const router = Router();
 
@@ -43,16 +42,12 @@ function requireAdmin(req: Request, res: Response, next: any) {
 }
 
 router.get('/users', requireAdmin, async (_req: Request, res: Response) => {
-  if (!isSupabaseEnabled()) {
-    return res.json({ users: store.listUsers() });
-  }
-
   try {
-    const users = await supabaseListRegisteredUsers();
+    const users = await store.listUsers();
     return res.json({ users });
   } catch (err) {
-    console.error('Supabase list users failed:', err);
-    return res.json({ users: store.listUsers() });
+    console.error('List users failed:', err);
+    return res.status(500).json({ error: 'Failed to list users' });
   }
 });
 
