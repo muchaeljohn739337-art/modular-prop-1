@@ -1,13 +1,18 @@
-# 🔑 CLOUDFLARE API TOKEN SETUP
+# Cloudflare API Token Setup
 
-**Your Account Details:**
-- Account ID: `74ecde4d46d4b399c7295cf599d2886b`
-- Zone ID: `0bff66558872c58ed5b8b7942acc34d9`
-- Domain: `advanciapayledger.com`
+Use environment variables for the token and zone metadata. Do not paste tokens into scripts.
+
+```powershell
+$env:CLOUDFLARE_API_TOKEN="<new-token>"
+$env:CLOUDFLARE_ZONE_ID="<zone-id>"
+$env:CLOUDFLARE_ACCOUNT_ID="<account-id>"
+```
+
+Domain: `advanciapayledger.com`
 
 ---
 
-## ⚡ QUICK SETUP (2 minutes)
+## Quick Setup
 
 ### **Step 1: Go to API Tokens**
 1. Visit: https://dash.cloudflare.com/profile/api-tokens
@@ -15,7 +20,7 @@
 
 ### **Step 2: Choose Custom Token**
 1. Click: **Custom token**
-2. Token name: `Advancia Pay Ledger API`
+2. Token name: `advancia-workspace-api`
 
 ### **Step 3: Set Permissions**
 Add these permissions:
@@ -31,7 +36,7 @@ Add these permissions:
 1. **Zone Resources** section
 2. Select: **Include** 
 3. Choose: `advanciapayledger.com`
-4. Zone ID should auto-populate: `0bff66558872c58ed5b8b7942acc34d9`
+4. Save the selected zone ID in `CLOUDFLARE_ZONE_ID`
 
 ### **Step 5: Set TTL**
 1. **Token TTL** section
@@ -40,21 +45,18 @@ Add these permissions:
 
 ### **Step 6: Create Token**
 1. Click: **Create token**
-2. **COPY THE TOKEN** (you won't see it again!)
+2. Copy the token once and store it in `CLOUDFLARE_API_TOKEN`
 
 ---
 
-## 🔄 UPDATE YOUR SCRIPT
+## Validate The Token
 
-### **Replace in test-cloudflare-api.ps1:**
+### PowerShell
 ```powershell
-# Line 2 - Replace with your new token
-$API_TOKEN = "YOUR_NEW_TOKEN_HERE"
-```
-
-### **Test the new token:**
-```powershell
-powershell -ExecutionPolicy Bypass -File "test-cloudflare-api.ps1"
+$env:CLOUDFLARE_API_TOKEN="<new-token>"
+$env:CLOUDFLARE_ZONE_ID="<zone-id>"
+$env:CLOUDFLARE_ACCOUNT_ID="<account-id>"
+pwsh -File "test-cloudflare-api.ps1"
 ```
 
 ---
@@ -101,32 +103,25 @@ Testing API token permissions...
 
 ## 🎯 NEXT STEPS
 
-### **After token works:**
-1. ✅ API token working
-2. ⏳ Add DNS records (follow CLOUDFLARE_DNS_SETUP.md)
-3. ⏳ Deploy email worker
-4. ⏳ Test email routing
+1. Token validates through `test-cloudflare-api.ps1`
+2. DNS records follow your current Hostinger VPS layout
+3. Optional email routing uses the same token if you keep Cloudflare Email Routing
 
-### **DNS Records Needed:**
+### DNS Records Needed
 | Type | Name | Content | Proxy |
 |------|------|---------|-------|
-| A | @ | `<VERCEL_IP>` | Proxied |
-| CNAME | www | cname.vercel-dns.com | Proxied |
-| A | api | 147.182.193.11 | Proxied |
+| A | @ | `<HOSTINGER_VPS_IP>` | Proxied |
+| CNAME | www | `@` | Proxied |
+| A | api | `<HOSTINGER_VPS_IP>` | DNS only or Proxied |
 
 ---
 
 ## 📞 QUICK LINKS
 
 **Create Token:** https://dash.cloudflare.com/profile/api-tokens  
-**Your Zone:** https://dash.cloudflare.com/0bff66558872c58ed5b8b7942acc34d9  
 **DNS Setup:** CLOUDFLARE_DNS_SETUP.md  
 **Test Script:** test-cloudflare-api.ps1
 
 ---
 
-## 🚀 GO CREATE YOUR TOKEN!
-
-**This should only take 2 minutes, then your Cloudflare setup will be 100% working!** ⚡
-
-**Remember:** Copy the token immediately - you won't see it again!
+Rotate any old Cloudflare token that was pasted into scripts or chat after you validate the new one.

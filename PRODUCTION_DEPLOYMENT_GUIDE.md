@@ -1,5 +1,7 @@
 # 🚀 Advancia PayLedger - Production Deployment Guide
 
+> Reference-only legacy guide. Do not use this file as the canonical deployment source. Use [WORKSPACE_CONTROL_TOWER.md](../WORKSPACE_CONTROL_TOWER.md) for the actual workspace topology and prefer Hostinger VPS as the single production origin.
+
 **Version:** 2.0.0  
 **Date:** January 27, 2026  
 **Status:** Ready for Deployment

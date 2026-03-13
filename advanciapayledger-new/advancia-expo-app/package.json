@@ -14,5 +14,23 @@
     "react": "19.1.0",
     "react-native": "0.81.5"
   },
+  "overrides": {
+    "@react-native/codegen": {
+      "minimatch": "9.0.9"
+    },
+    "minimatch": "9.0.9",
+    "glob": {
+      "minimatch": "10.2.4"
+    },
+    "rimraf": {
+      "glob": {
+        "minimatch": "10.2.4"
+      }
+    },
+    "test-exclude": {
+      "minimatch": "3.1.5"
+    },
+    "tar": "7.5.11"
+  },
   "private": true
 }

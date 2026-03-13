@@ -12,7 +12,7 @@ const router = Router();
 function getStripe(): Stripe | null {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key || key.startsWith('sk_test_mock')) return null;
-  return new Stripe(key, { apiVersion: '2025-04-30.basil' });
+  return new Stripe(key, { apiVersion: '2026-01-28.clover' });
 }
 
 // POST /api/payments/create-intent — create a real Stripe PaymentIntent
@@ -20,7 +20,7 @@ router.post(
   '/create-intent',
   authMiddleware,
   createPaymentIntentValidation,
-  async (req: Request, res: Response) => {
+  async (req: AuthRequest, res: Response) => {
     try {
       const { amount, currency } = req.body;
       const stripe = getStripe();
@@ -39,11 +39,11 @@ router.post(
         amount: Math.round(amount * 100), // Stripe uses cents
         currency: (currency || 'usd').toLowerCase(),
         metadata: {
-          userId: (req as AuthRequest).user?.userId || 'unknown',
+          userId: req.userId || 'unknown',
         },
       });
 
-      res.json({
+      return res.json({
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
         amount: paymentIntent.amount / 100,
@@ -56,7 +56,7 @@ router.post(
       const message = error instanceof Stripe.errors.StripeError
         ? error.message
         : 'Failed to create payment intent';
-      res.status(400).json({ error: message });
+      return res.status(400).json({ error: message });
     }
   }
 );
@@ -75,7 +75,7 @@ router.post(
         Math.floor(Math.random() * 16).toString(16)
       ).join('');
 
-      res.json({
+      return res.json({
         txHash,
         status: 'pending',
         amount,
@@ -85,7 +85,7 @@ router.post(
       });
     } catch (error: unknown) {
       console.error('Crypto payment error:', error);
-      res.status(500).json({ error: 'Failed to process crypto payment' });
+      return res.status(500).json({ error: 'Failed to process crypto payment' });
     }
   }
 );

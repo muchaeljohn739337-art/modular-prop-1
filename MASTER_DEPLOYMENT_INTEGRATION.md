@@ -1,5 +1,7 @@
 # 🚀 ADVANCIA PAYLEDGER - COMPLETE INTEGRATION GUIDE
 
+> Reference-only legacy guide. Parts of this document still describe the old Vercel + DigitalOcean split. Use [WORKSPACE_CONTROL_TOWER.md](../WORKSPACE_CONTROL_TOWER.md) as the source of truth for the current workspace deployment model.
+
 **Status:** ✅ **ALL SYSTEMS READY FOR DEPLOYMENT**  
 **Date:** January 27, 2026  
 **Version:** 2.0.0

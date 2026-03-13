@@ -1,5 +1,9 @@
 # 🚀 ADVANCIA PAY LEDGER - PLATFORM STATUS
 
+> [!WARNING]
+> Reference-only legacy status snapshot. It may describe an older local or pre-production state and should not be treated as the live deployment source of truth.
+> Use `WORKSPACE_CONTROL_TOWER.md` for current repo and infrastructure ownership.
+
 ## ✅ SYSTEMS RUNNING
 
 ### Frontend - ✅ WORKING

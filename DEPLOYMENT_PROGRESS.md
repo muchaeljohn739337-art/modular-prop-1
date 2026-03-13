@@ -1,5 +1,9 @@
 # 🚀 ADVANCIA PAYLEDGER - DEPLOYMENT IN PROGRESS
 
+> [!WARNING]
+> Reference-only legacy progress log. The Vercel and DigitalOcean status below reflects an older deployment track and should not be treated as current production status.
+> Use `WORKSPACE_CONTROL_TOWER.md` for the current workspace deployment model.
+
 ## ✅ DEPLOYMENT STATUS: ACTIVE
 
 ### 📋 **Current Status:**

@@ -5,8 +5,8 @@
 # ⚠️ CHANGE THIS TO YOUR REAL EMAIL!
 $DESTINATION_EMAIL = Read-Host "Enter your email address (e.g., your-email@gmail.com)"
 
-$ZONE_ID = "0bff66558872c58ed5b8b7942acc34d9"
-$API_TOKEN = "5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-"
+$ZONE_ID = if ($env:CLOUDFLARE_ZONE_ID) { $env:CLOUDFLARE_ZONE_ID } else { "0bff66558872c58ed5b8b7942acc34d9" }
+$API_TOKEN = $env:CLOUDFLARE_API_TOKEN
 $DOMAIN = "advanciapayledger.com"
 
 Write-Host "============================================" -ForegroundColor Blue
@@ -21,6 +21,11 @@ if ([string]::IsNullOrWhiteSpace($DESTINATION_EMAIL)) {
 
 if ($DESTINATION_EMAIL -notmatch "@") {
     Write-Host "[ERROR] Please enter a valid email address!" -ForegroundColor Red
+    exit 1
+}
+
+if (-not $API_TOKEN) {
+    Write-Host "[ERROR] Set CLOUDFLARE_API_TOKEN before running this script." -ForegroundColor Red
     exit 1
 }
 

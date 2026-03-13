@@ -2,9 +2,12 @@
 
 **Domain:** advanciapayledger.com  
 **Zone ID:** `0bff66558872c58ed5b8b7942acc34d9`  
-**API Token:** `5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-`
+**API Token:** load through `CLOUDFLARE_API_TOKEN`
 
-⚠️ **SECURITY:** Keep this file private! Contains API credentials.
+```bash
+export CLOUDFLARE_API_TOKEN="<new-token>"
+export CLOUDFLARE_ZONE_ID="0bff66558872c58ed5b8b7942acc34d9"
+```
 
 ---
 
@@ -12,7 +15,7 @@
 
 ```bash
 curl -X GET "https://api.cloudflare.com/client/v4/user/tokens/verify" \
-     -H "Authorization: Bearer 5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
      -H "Content-Type: application/json"
 ```
 
@@ -23,8 +26,8 @@ curl -X GET "https://api.cloudflare.com/client/v4/user/tokens/verify" \
 ## Step 2: Enable Email Routing
 
 ```bash
-curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b7942acc34d9/email/routing/enable" \
-     -H "Authorization: Bearer 5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-" \
+curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/email/routing/enable" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
      -H "Content-Type: application/json"
 ```
 
@@ -37,8 +40,8 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b79
 ⚠️ **REPLACE** `your-email@gmail.com` with your actual email!
 
 ```bash
-curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b7942acc34d9/email/routing/addresses" \
-     -H "Authorization: Bearer 5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-" \
+curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/email/routing/addresses" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
      -H "Content-Type: application/json" \
      --data '{"email":"your-email@gmail.com"}'
 ```
@@ -52,8 +55,8 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b79
 ### 4.1 livechat@advanciapayledger.com (MAIN REQUEST)
 
 ```bash
-curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b7942acc34d9/email/routing/rules" \
-     -H "Authorization: Bearer 5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-" \
+curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/email/routing/rules" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
      -H "Content-Type: application/json" \
      --data '{
        "matchers": [{
@@ -73,8 +76,8 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b79
 ### 4.2 support@advanciapayledger.com
 
 ```bash
-curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b7942acc34d9/email/routing/rules" \
-     -H "Authorization: Bearer 5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-" \
+curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/email/routing/rules" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
      -H "Content-Type: application/json" \
      --data '{
        "matchers": [{
@@ -94,8 +97,8 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b79
 ### 4.3 billing@advanciapayledger.com
 
 ```bash
-curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b7942acc34d9/email/routing/rules" \
-     -H "Authorization: Bearer 5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-" \
+curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/email/routing/rules" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
      -H "Content-Type: application/json" \
      --data '{
        "matchers": [{
@@ -115,8 +118,8 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b79
 ### 4.4 admin@advanciapayledger.com
 
 ```bash
-curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b7942acc34d9/email/routing/rules" \
-     -H "Authorization: Bearer 5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-" \
+curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/email/routing/rules" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
      -H "Content-Type: application/json" \
      --data '{
        "matchers": [{
@@ -136,8 +139,8 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b79
 ### 4.5 noreply@advanciapayledger.com
 
 ```bash
-curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b7942acc34d9/email/routing/rules" \
-     -H "Authorization: Bearer 5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-" \
+curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/email/routing/rules" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
      -H "Content-Type: application/json" \
      --data '{
        "matchers": [{
@@ -157,8 +160,8 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b79
 ### 4.6 info@advanciapayledger.com
 
 ```bash
-curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b7942acc34d9/email/routing/rules" \
-     -H "Authorization: Bearer 5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-" \
+curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/email/routing/rules" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
      -H "Content-Type: application/json" \
      --data '{
        "matchers": [{
@@ -182,16 +185,16 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b79
 ### List all routing rules:
 
 ```bash
-curl -X GET "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b7942acc34d9/email/routing/rules" \
-     -H "Authorization: Bearer 5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-" \
+curl -X GET "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/email/routing/rules" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
      -H "Content-Type: application/json"
 ```
 
 ### List destination addresses:
 
 ```bash
-curl -X GET "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b7942acc34d9/email/routing/addresses" \
-     -H "Authorization: Bearer 5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-" \
+curl -X GET "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/email/routing/addresses" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
      -H "Content-Type: application/json"
 ```
 

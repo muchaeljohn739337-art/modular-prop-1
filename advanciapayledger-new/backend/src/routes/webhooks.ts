@@ -9,7 +9,7 @@ router.post(
   '/stripe',
   async (req: Request, res: Response) => {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-      apiVersion: '2025-04-30.basil',
+      apiVersion: '2026-01-28.clover',
     });
 
     const sig = req.headers['stripe-signature'] as string;
@@ -52,7 +52,7 @@ router.post(
         console.log(`Unhandled event type: ${event.type}`);
     }
 
-    res.json({ received: true });
+    return res.json({ received: true });
   }
 );
 

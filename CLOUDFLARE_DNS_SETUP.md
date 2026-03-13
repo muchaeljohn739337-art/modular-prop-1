@@ -1,5 +1,9 @@
 # 🌐 CLOUDFLARE DNS SETUP - READY TO GO
 
+> [!WARNING]
+> Reference-only legacy DNS guide. The Vercel root-domain records and old API IP values below may not match the current production layout.
+> Use `WORKSPACE_CONTROL_TOWER.md` plus the current Hostinger VPS IP when applying live DNS changes.
+
 **Status:** Ready for DNS configuration  
 **Domain:** advanciapayledger.com  
 **Time:** 10 minutes

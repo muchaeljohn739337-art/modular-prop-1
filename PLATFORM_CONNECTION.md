@@ -1,5 +1,9 @@
 # 🚀 ADVANCIA PAYLEDGER - PLATFORM CONNECTION
 
+> [!WARNING]
+> Reference-only legacy connection guide. The frontend/backend pairing below reflects an older Vercel-oriented deployment path and is not the canonical production model.
+> Use `WORKSPACE_CONTROL_TOWER.md` for the current deployment topology before applying any changes.
+
 ## ✅ BACKEND DEPLOYED: advanciapayledger.com
 
 ### **Current Status:**

@@ -8,7 +8,7 @@
 - **Email routing permissions** - All failed
 
 ### Root Cause
-API Token: `5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-` is invalid/expired
+An old Cloudflare API token is invalid or expired.
 
 ## 🔧 Fix Steps
 
@@ -26,9 +26,11 @@ Go to Cloudflare Dashboard → My Profile → API Tokens → Create Token
 - TTL: Custom (set to 1 year)
 
 ### 2. Update Test Script
-Replace token in `test-cloudflare-api.ps1`:
+Use environment variables before running `test-cloudflare-api.ps1`:
 ```powershell
-$API_TOKEN = "YOUR_NEW_TOKEN_HERE"
+$env:CLOUDFLARE_API_TOKEN="<new-token>"
+$env:CLOUDFLARE_ZONE_ID="<zone-id>"
+$env:CLOUDFLARE_ACCOUNT_ID="<account-id>"
 ```
 
 ### 3. Deploy Email Worker
@@ -68,7 +70,7 @@ destinationEmail: "your-actual-email@gmail.com", // ⚠️ CHANGE THIS
 
 ## 🧪 Verification Steps
 1. Generate new API token
-2. Update test script with new token
+2. Load the token into environment variables
 3. Run: `.\test-cloudflare-api.ps1`
 4. Should see all green checkmarks
 5. Deploy email worker
@@ -83,7 +85,7 @@ destinationEmail: "your-actual-email@gmail.com", // ⚠️ CHANGE THIS
 
 ## 📞 Next Actions
 1. Create new Cloudflare API token
-2. Update configuration files
+2. Rotate any old token that was pasted into files or chat
 3. Deploy email worker
 4. Test email routing
 

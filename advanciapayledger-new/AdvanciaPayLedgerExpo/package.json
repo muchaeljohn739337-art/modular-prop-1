@@ -9,20 +9,38 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "2.2.0",
-    "@react-navigation/bottom-tabs": "^7.10.1",
-    "@react-navigation/native": "^7.1.28",
-    "axios": "^1.13.3",
-    "expo": "~54.0.32",
-    "expo-status-bar": "~3.0.9",
-    "react": "19.1.0",
-    "react-native": "0.81.5",
+    "@react-native-async-storage/async-storage": "3.0.1",
+    "@react-navigation/bottom-tabs": "^7.15.5",
+    "@react-navigation/native": "^7.1.33",
+    "axios": "^1.13.6",
+    "expo": "~55.0.6",
+    "expo-status-bar": "~55.0.4",
+    "react": "19.2.4",
+    "react-native": "0.84.1",
     "react-native-chart-kit": "^6.12.0",
     "react-native-linear-gradient": "^2.8.3",
-    "react-native-safe-area-context": "~5.6.0",
-    "react-native-screens": "~4.16.0",
-    "react-native-svg": "15.12.1",
+    "react-native-safe-area-context": "5.7.0",
+    "react-native-screens": "4.24.0",
+    "react-native-svg": "15.15.3",
     "react-native-vector-icons": "^10.3.0"
+  },
+  "overrides": {
+    "@react-native/codegen": {
+      "minimatch": "9.0.9"
+    },
+    "minimatch": "9.0.9",
+    "glob": {
+      "minimatch": "10.2.4"
+    },
+    "rimraf": {
+      "glob": {
+        "minimatch": "10.2.4"
+      }
+    },
+    "test-exclude": {
+      "minimatch": "3.1.5"
+    },
+    "tar": "7.5.11"
   },
   "private": true
 }

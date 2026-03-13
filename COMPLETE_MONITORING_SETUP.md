@@ -1,5 +1,9 @@
 # 🚀 ADVANCIA PAYLEDGER - COMPLETE MONITORING SETUP
 
+> [!WARNING]
+> Reference-only legacy monitoring guide. This document assumes a Vercel-hosted frontend as the active production target.
+> Use `WORKSPACE_CONTROL_TOWER.md` to confirm the current production topology before following any setup steps here.
+
 ## ✅ VERCEL ANALYTICS & SPEED INSIGHTS CONFIGURED
 
 ### **What's Been Added:**

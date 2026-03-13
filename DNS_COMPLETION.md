@@ -54,7 +54,8 @@ The main issue is still the **expired API token**:
 
 2. **Update Test Script:**
    ```powershell
-   $API_TOKEN = "YOUR_NEW_TOKEN_HERE"
+   $env:CLOUDFLARE_API_TOKEN="<new-token>"
+   $env:CLOUDFLARE_ZONE_ID="<zone-id>"
    ```
 
 3. **Deploy Email Worker:**
@@ -66,7 +67,7 @@ The main issue is still the **expired API token**:
 
 ### Step 1: Add API Subdomain
 1. Go to Cloudflare DNS
-2. Add A record: `api` → `216.198.79.1`
+2. Add A record: `api` → `<HOSTINGER_VPS_IP>`
 
 ### Step 2: Fix Email Routing
 1. Generate new API token

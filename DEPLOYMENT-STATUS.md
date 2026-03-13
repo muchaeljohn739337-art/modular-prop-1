@@ -1,5 +1,9 @@
 # 🚀 DEPLOYMENT STATUS - Advancia Pay Ledger
 
+> [!WARNING]
+> Reference-only legacy status document. The repo, commit, and Vercel/DigitalOcean workflow described here are historical and should not be treated as the current production plan.
+> Use `WORKSPACE_CONTROL_TOWER.md` for the live canonical state.
+
 **Repository:** https://github.com/advancia-devuser/advanciapayledger-1.git  
 **Branch:** master  
 **Current Commit:** 543db42  

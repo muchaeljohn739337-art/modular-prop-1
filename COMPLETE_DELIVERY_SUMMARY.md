@@ -1,5 +1,9 @@
 # 🎉 ADVANCIA PAYLEDGER - COMPLETE DELIVERY SUMMARY
 
+> [!WARNING]
+> Reference-only legacy summary. It captures a prior Vercel/DigitalOcean delivery state and is not the live source of truth for production deployment.
+> Use `WORKSPACE_CONTROL_TOWER.md` for the current canonical setup.
+
 **Date:** January 27, 2026  
 **Status:** ✅ ALL SYSTEMS GO  
 **Version:** 2.0.0

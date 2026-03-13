@@ -1,6 +1,6 @@
 #!/bin/bash
 # Quick Deploy Script for Advancia PayLedger
-# Run on DigitalOcean server: 147.182.193.11
+# Run on your Linux VPS after uploading backend/frontend artifacts
 
 set -e
 
@@ -16,10 +16,13 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Variables
-BACKEND_DIR="/opt/backend-clean"
-FRONTEND_DIR="/opt/frontend-clean"
-API_PORT="3001"
-FRONTEND_PORT="3000"
+BACKEND_DIR="${BACKEND_DIR:-/opt/backend-clean}"
+FRONTEND_DIR="${FRONTEND_DIR:-/opt/frontend-clean}"
+API_PORT="${API_PORT:-3001}"
+FRONTEND_PORT="${FRONTEND_PORT:-3000}"
+DOMAIN="${DOMAIN:-advanciapayledger.com}"
+API_DOMAIN="${API_DOMAIN:-api.${DOMAIN}}"
+LETSENCRYPT_EMAIL="${LETSENCRYPT_EMAIL:-admin@advanciapayledger.com}"
 
 echo "📦 Step 1: Update system packages"
 apt-get update -qq
@@ -95,7 +98,7 @@ upstream frontend {
 
 server {
     listen 80;
-    server_name advanciapayledger.com www.advanciapayledger.com;
+    server_name ${DOMAIN} www.${DOMAIN};
 
     # Frontend
     location / {
@@ -120,7 +123,7 @@ server {
 
 server {
     listen 80;
-    server_name api.advanciapayledger.com;
+    server_name ${API_DOMAIN};
 
     location / {
         proxy_pass http://backend;
@@ -145,7 +148,7 @@ if ! command -v certbot &> /dev/null; then
     apt-get install -y -qq certbot python3-certbot-nginx
 fi
 
-certbot --nginx -d advanciapayledger.com -d www.advanciapayledger.com -d api.advanciapayledger.com --non-interactive --agree-tos --email admin@advanciapayledger.com
+certbot --nginx -d ${DOMAIN} -d www.${DOMAIN} -d ${API_DOMAIN} --non-interactive --agree-tos --email ${LETSENCRYPT_EMAIL}
 
 echo ""
 echo "✅ Step 8: Verify Services"
@@ -164,8 +167,8 @@ echo "📊 Service Status:"
 pm2 status
 echo ""
 echo "🔗 URLs:"
-echo "   - Frontend: https://advanciapayledger.com"
-echo "   - API: https://api.advanciapayledger.com"
+echo "   - Frontend: https://${DOMAIN}"
+echo "   - API: https://${API_DOMAIN}"
 echo ""
 echo "📝 View logs:"
 echo "   pm2 logs advancia-backend"

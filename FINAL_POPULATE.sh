@@ -473,10 +473,10 @@ cd frontend-clean
 vercel --prod
 ```
 
-### DigitalOcean (Backend)
+### Generic VPS (Backend)
 ```bash
 cd backend-clean
-doctl apps create --spec .do/app.yaml
+./deploy-backend.sh
 ```
 
 ## 📞 Support

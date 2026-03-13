@@ -1,5 +1,9 @@
 # 🚀 ADVANCIA PAYLEDGER - COMPLETE DEPLOYMENT GUIDE
 
+> [!WARNING]
+> Reference-only legacy guide. This document describes an older DigitalOcean backend and Vercel frontend deployment split.
+> Use `WORKSPACE_CONTROL_TOWER.md` for the current canonical production topology and source repos.
+
 ## ✅ DEPLOYMENT STATUS: READY
 
 ### 📋 **What's Ready:**

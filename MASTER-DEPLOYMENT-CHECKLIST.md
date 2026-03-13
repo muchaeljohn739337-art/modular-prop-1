@@ -1,6 +1,8 @@
 🎯 ADVANCIA PAYLEDGER - DEPLOYMENT MASTER CHECKLIST
 ================================================
 
+> Reference-only legacy checklist. The IPs and hosting split below may not match the current production decision. Use [WORKSPACE_CONTROL_TOWER.md](../WORKSPACE_CONTROL_TOWER.md) first.
+
 ## PRE-DEPLOYMENT ✅
 
 - [x] DNS configured in Cloudflare

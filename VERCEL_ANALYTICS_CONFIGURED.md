@@ -1,5 +1,9 @@
 # 🚀 ADVANCIA PAYLEDGER - VERCEL ANALYTICS CONFIGURED
 
+> [!WARNING]
+> Reference-only legacy guide. This document assumes a Vercel-hosted frontend as the active production path.
+> Use `WORKSPACE_CONTROL_TOWER.md` to confirm the current deployment topology before following any steps here.
+
 ## ✅ VERCEL ANALYTICS INSTALLED & CONFIGURED
 
 ### **What's Been Added:**

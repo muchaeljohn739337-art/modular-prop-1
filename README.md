@@ -1,5 +1,10 @@
 # Advancia PayLedger
 
+> Canonical production repo: [pdtribe181-prog/modullar-advancia](https://github.com/pdtribe181-prog/modullar-advancia). This repository is meta/reference material and contains variant code and deployment assets; do not use it as the production source for the live Advancia domains.
+
+> [!WARNING]
+> Historical deployment details in this README still describe older Vercel-oriented flows. Treat them as reference-only and defer to `WORKSPACE_CONTROL_TOWER.md` for current production positioning.
+
 A full-stack cryptocurrency payment and healthcare management platform with Web3 wallet integration, built with Next.js and Express.
 
 **Live:** [advanciapayledger-new.vercel.app](https://advanciapayledger-new.vercel.app)

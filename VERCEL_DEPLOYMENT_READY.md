@@ -1,5 +1,9 @@
 # 🚀 ADVANCIA PAYLEDGER - VERCEL DEPLOYMENT READY
 
+> [!WARNING]
+> Reference-only legacy guide. This Vercel deployment path is not the current production standard for the workspace.
+> Use `WORKSPACE_CONTROL_TOWER.md` for the canonical repo and deployment topology before using any steps below.
+
 ## ✅ DEPLOYMENT PREPARATION COMPLETE
 
 ### 📋 **What's Ready for Vercel:**

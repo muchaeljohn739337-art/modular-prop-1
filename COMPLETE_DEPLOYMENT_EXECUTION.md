@@ -1,5 +1,9 @@
 # 🚀 ADVANCIA PAYLEDGER - COMPLETE DEPLOYMENT GUIDE
 
+> [!WARNING]
+> Reference-only legacy execution guide. The DigitalOcean credentials and deployment sequence below are historical and should not be used as the current production plan.
+> Use `WORKSPACE_CONTROL_TOWER.md` before applying any infrastructure changes.
+
 ## ✅ DEPLOYMENT STATUS: READY FOR EXECUTION
 
 ### 🔑 **Your DigitalOcean Credentials:**

@@ -158,8 +158,8 @@ wrangler deploy
 **Or via API:**
 
 ```bash
-curl -X POST "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b7942acc34d9/email/routing/rules" \
-     -H "Authorization: Bearer 5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-" \
+curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/email/routing/rules" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
      -H "Content-Type: application/json" \
      --data '{
        "enabled": true,
@@ -439,8 +439,8 @@ const rateLimiter = {
 wrangler deployments list
 
 # Check email routing rules
-curl -X GET "https://api.cloudflare.com/client/v4/zones/0bff66558872c58ed5b8b7942acc34d9/email/routing/rules" \
-     -H "Authorization: Bearer 5tovG0IhoVoeZ2y-fNaEyFkmTBahLJUiIvlhihQ-"
+curl -X GET "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/email/routing/rules" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
 
 # Verify worker is connected to email routing
 # Go to: Cloudflare Dashboard → Email → Email Workers

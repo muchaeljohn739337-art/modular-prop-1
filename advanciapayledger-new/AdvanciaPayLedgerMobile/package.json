@@ -21,5 +21,23 @@
     "react-native-screens": "^4.20.0",
     "react-native-web": "^0.21.0"
   },
+  "overrides": {
+    "@react-native/codegen": {
+      "minimatch": "9.0.9"
+    },
+    "minimatch": "9.0.9",
+    "glob": {
+      "minimatch": "10.2.4"
+    },
+    "rimraf": {
+      "glob": {
+        "minimatch": "10.2.4"
+      }
+    },
+    "test-exclude": {
+      "minimatch": "3.1.5"
+    },
+    "tar": "7.5.11"
+  },
   "private": true
 }

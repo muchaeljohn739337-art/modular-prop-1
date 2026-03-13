@@ -1,7 +1,16 @@
 # Test Cloudflare API permissions
-$API_TOKEN = "YOUR_NEW_TOKEN_HERE" # ⚠️ UPDATE THIS WITH NEW TOKEN
-$ZONE_ID = "0bff66558872c58ed5b8b7942acc34d9"
-$ACCOUNT_ID = "74ecde4d46d4b399c7295cf599d2886b"
+$API_TOKEN = $env:CLOUDFLARE_API_TOKEN
+$ZONE_ID = $env:CLOUDFLARE_ZONE_ID
+
+if (-not $API_TOKEN) {
+    Write-Host "Missing CLOUDFLARE_API_TOKEN environment variable." -ForegroundColor Red
+    exit 1
+}
+
+if (-not $ZONE_ID) {
+    Write-Host "Missing CLOUDFLARE_ZONE_ID environment variable." -ForegroundColor Red
+    exit 1
+}
 
 $headers = @{
     "Authorization" = "Bearer $API_TOKEN"

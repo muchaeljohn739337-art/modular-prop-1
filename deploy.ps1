@@ -1,9 +1,16 @@
 # PowerShell Deployment Helper
 # Run this to upload files and deploy
 
-$ServerIP = "147.182.193.11"
-$Domain = "advanciapayledger.com"
-$ProjectRoot = "c:\Users\mucha.DESKTOP-H7T9NPM\Downloads\mdsiles\myproject$new"
+$ServerHost = if ($env:DEPLOY_HOST) { $env:DEPLOY_HOST } else { Read-Host "Enter target VPS host or IP" }
+$DeployUser = if ($env:DEPLOY_USER) { $env:DEPLOY_USER } else { "root" }
+$Domain = if ($env:DEPLOY_DOMAIN) { $env:DEPLOY_DOMAIN } else { "advanciapayledger.com" }
+$ProjectRoot = if ($env:PROJECT_ROOT) { $env:PROJECT_ROOT } else { (Get-Location).Path }
+$TargetRoot = if ($env:DEPLOY_TARGET_ROOT) { $env:DEPLOY_TARGET_ROOT } else { "/opt/advancia-payledger" }
+
+if ([string]::IsNullOrWhiteSpace($ServerHost)) {
+    Write-Host "Target VPS host is required" -ForegroundColor Red
+    exit 1
+}
 
 Write-Host "============================================" -ForegroundColor Cyan
 Write-Host "ADVANCIA PAYLEDGER - DEPLOYMENT HELPER" -ForegroundColor Cyan
@@ -52,22 +59,22 @@ switch ($choice) {
         
         # Upload deployment script
         Write-Host "  - Uploading deploy-all.sh..." -ForegroundColor Cyan
-        scp "$ProjectRoot\deploy-all.sh" "root@${ServerIP}:/tmp/" 2>$null
+            scp "$ProjectRoot\deploy-all.sh" "${DeployUser}@${ServerHost}:/tmp/" 2>$null
         
         # Upload backend
         Write-Host "  - Uploading backend (this may take a minute)..." -ForegroundColor Cyan
-        scp -r "$ProjectRoot\backend-clean\*" "root@${ServerIP}:/opt/backend/" 2>$null
+            scp -r "$ProjectRoot\backend-clean\*" "${DeployUser}@${ServerHost}:${TargetRoot}/backend/" 2>$null
         
         # Upload frontend
         Write-Host "  - Uploading frontend (this may take a minute)..." -ForegroundColor Cyan
-        scp -r "$ProjectRoot\frontend-clean\*" "root@${ServerIP}:/opt/frontend/" 2>$null
+            scp -r "$ProjectRoot\frontend-clean\*" "${DeployUser}@${ServerHost}:${TargetRoot}/frontend/" 2>$null
         
         Write-Host ""
         Write-Host "✓ Files uploaded! Now running deployment script..." -ForegroundColor Green
         Write-Host ""
         
         # SSH and run script
-        ssh "root@${ServerIP}" @"
+        ssh "${DeployUser}@${ServerHost}" @"
 chmod +x /tmp/deploy-all.sh
 /tmp/deploy-all.sh
 "@
@@ -86,12 +93,12 @@ chmod +x /tmp/deploy-all.sh
         Write-Host "📤 Manual Upload - Copy these commands:" -ForegroundColor Yellow
         Write-Host ""
         Write-Host "# From PowerShell:" -ForegroundColor Cyan
-        Write-Host "scp `"$ProjectRoot\deploy-all.sh`" `"root@${ServerIP}:/tmp/`"" -ForegroundColor Green
-        Write-Host "scp -r `"$ProjectRoot\backend-clean\*`" `"root@${ServerIP}:/opt/backend/`"" -ForegroundColor Green
-        Write-Host "scp -r `"$ProjectRoot\frontend-clean\*`" `"root@${ServerIP}:/opt/frontend/`"" -ForegroundColor Green
+        Write-Host "scp `"$ProjectRoot\deploy-all.sh`" `"${DeployUser}@${ServerHost}:/tmp/`"" -ForegroundColor Green
+        Write-Host "scp -r `"$ProjectRoot\backend-clean\*`" `"${DeployUser}@${ServerHost}:${TargetRoot}/backend/`"" -ForegroundColor Green
+        Write-Host "scp -r `"$ProjectRoot\frontend-clean\*`" `"${DeployUser}@${ServerHost}:${TargetRoot}/frontend/`"" -ForegroundColor Green
         Write-Host ""
         Write-Host "# Then SSH and run:" -ForegroundColor Cyan
-        Write-Host "ssh root@$ServerIP" -ForegroundColor Green
+        Write-Host "ssh ${DeployUser}@$ServerHost" -ForegroundColor Green
         Write-Host "chmod +x /tmp/deploy-all.sh" -ForegroundColor Green
         Write-Host "/tmp/deploy-all.sh" -ForegroundColor Green
         Write-Host ""
@@ -101,15 +108,15 @@ chmod +x /tmp/deploy-all.sh
         Write-Host ""
         Write-Host "📤 Uploading files..." -ForegroundColor Yellow
         
-        scp "$ProjectRoot\deploy-all.sh" "root@${ServerIP}:/tmp/"
-        scp -r "$ProjectRoot\backend-clean\*" "root@${ServerIP}:/opt/backend/"
-        scp -r "$ProjectRoot\frontend-clean\*" "root@${ServerIP}:/opt/frontend/"
+        scp "$ProjectRoot\deploy-all.sh" "${DeployUser}@${ServerHost}:/tmp/"
+        scp -r "$ProjectRoot\backend-clean\*" "${DeployUser}@${ServerHost}:${TargetRoot}/backend/"
+        scp -r "$ProjectRoot\frontend-clean\*" "${DeployUser}@${ServerHost}:${TargetRoot}/frontend/"
         
         Write-Host ""
         Write-Host "✓ Files uploaded!" -ForegroundColor Green
         Write-Host ""
         Write-Host "Next steps:" -ForegroundColor Cyan
-        Write-Host "1. SSH to server: ssh root@$ServerIP" -ForegroundColor Green
+        Write-Host "1. SSH to server: ssh ${DeployUser}@$ServerHost" -ForegroundColor Green
         Write-Host "2. Run: /tmp/deploy-all.sh" -ForegroundColor Green
         Write-Host ""
     }

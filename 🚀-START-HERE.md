@@ -1,5 +1,9 @@
 # 🎯 DEPLOYMENT READY - EXECUTE NOW
 
+> [!WARNING]
+> Reference-only legacy guide. This document reflects an older Vercel/DigitalOcean deployment path and is not the production source of truth.
+> Use `WORKSPACE_CONTROL_TOWER.md` for the canonical repo map and the current Hostinger VPS + Cloudflare production topology.
+
 ## ✅ What's Done
 
 1. ✅ **DNS Setup** - Cloudflare configured
